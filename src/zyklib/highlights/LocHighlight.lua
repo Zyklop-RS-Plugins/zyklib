@@ -65,7 +65,7 @@ local function update_instances(instance)
 end
 
 
----@type zyklib.EwentHandler
+---@type zyklib.EventHandler
 local draw_handler = ewent.Native.ServerLogic:subscribe(function(event)
   for instance, _ in pairs(active_instances) do
     update_instances(instance)

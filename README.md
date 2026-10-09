@@ -33,7 +33,7 @@ Require the library and use the modules it exposes:
 ```lua
 local zyklib = require "zyklib"
 
-local Ewent = zyklib.reactive.Ewent
+local Event = zyklib.reactive.Event
 local Highlight = zyklib.highlights.Highlight
 ```
 
@@ -48,7 +48,7 @@ Available modules:
 | Module                | Description                                                                                                                                   |
 | --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | `lua_util`            | General Lua helpers                                                                                                                           |
-| `reactive`            | Events and reactive values (`Ewent`, `EwentHandler`, `Native`, `Observable`, `Derived`)                                                       |
+| `reactive`            | Events and reactive values (`Event`, `EventHandler`, `Native`, `Observable`, `Derived`)                                                       |
 | `api_util`            | Helpers for the RuneScape plugin API                                                                                                          |
 | `MutableMesh`         | Mesh that can be modified after creation                                                                                                      |
 | `UniqueNameGenerator` | Generates unique names                                                                                                                        |

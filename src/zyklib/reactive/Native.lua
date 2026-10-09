@@ -1,4 +1,4 @@
-local Ewent = require "zyklib/reactive/Ewent"
+local ZyklibEvent = require "zyklib/reactive/Event"
 local UniqueNameGenerator = require "zyklib/UniqueNameGenerator"
 
 local handler_name_generator = UniqueNameGenerator.new("api_util_handler_")
@@ -6,22 +6,22 @@ local handler_name_generator = UniqueNameGenerator.new("api_util_handler_")
 ---Create a new event specifically for game events.
 ---@generic T, RetT
 ---@param game_event EventSubscription<T, RetT>
----@return zyklib.Ewent<T, RetT>?
+---@return zyklib.Event<T, RetT>?
 local function forNativeGameEvent(game_event)
   ---@type string?
   local active_native_listener = nil
 
-  ---@type zyklib.Ewent
-  local ewent
+  ---@type zyklib.Event
+  local event
 
-  -- We need to separate declaration and assignment so that ewent is properly in scope for the callback function.
+  -- We need to separate declaration and assignment so that event is properly in scope for the callback function.
 
-  ewent = Ewent.new(function(status)
+  event = ZyklibEvent.new(function(status)
     if status and not active_native_listener then
       active_native_listener = handler_name_generator:next()
 
       game_event.Subscribe(active_native_listener, function(payload)
-        return ewent:trigger(payload)
+        return event:trigger(payload)
       end)
     elseif (not status) and active_native_listener ~= nil then
       game_event.Unsubscribe(active_native_listener)
@@ -29,7 +29,7 @@ local function forNativeGameEvent(game_event)
     end
   end)
 
-  return ewent
+  return event
 end
 
 return {

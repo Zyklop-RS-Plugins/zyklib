@@ -1,12 +1,14 @@
-local Ewent = require("zyklib/reactive/Ewent")
+local Event = require("zyklib/reactive/Event")
 local lua_util = require("zyklib/lua_util")
 
----@class zyklib.Observable<T> : zyklib.Ewent<{old: T, new: T}, nil>
+---@class zyklib.Observable<T> : zyklib.Event<{old: T, new: T}, nil>
+---@field subscribe fun(self: zyklib.Observable<T>, listener: fun(payload: {old: T, new: T}), start_suspended?: boolean): zyklib.EventHandler<{old: T, new: T}, nil>
+---@field subscribeSuspended fun(self: zyklib.Observable<T>, listener: fun(payload: {old: T, new: T})): zyklib.EventHandler<{old: T, new: T}, nil>
 ---@field private value T
 ---@field private equals fun(a: T, b: T): boolean
 local Observable = {}
 Observable.__index = Observable
-setmetatable(Observable, { __index = Ewent })
+setmetatable(Observable, { __index = Event })
 
 ---@generic T
 ---@param initial_value T
@@ -15,7 +17,7 @@ setmetatable(Observable, { __index = Ewent })
 ---@return zyklib.Observable<T>
 function Observable.new(initial_value, equals, status_changed_callback)
   ---@type zyklib.Observable<T>
-  local self = Ewent.new(status_changed_callback)
+  local self = Event.new(status_changed_callback)
   setmetatable(self, Observable)
 
   self.value = initial_value

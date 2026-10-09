@@ -43,14 +43,14 @@ function Derived.forVariable(var, tick_rate)
 end
 
 ---Creates an observable for a specific interface that can be subscribed to to be notified when the interface opens and closes.
----@param interface integer The id of the interface in question
+---@param interface InterfaceId The id of the interface in question
 ---@return zyklib.Observable<ui.Interface?>
 function Derived.interface(interface)
   -- TODO: Maybe it makes sense to memoize these internally.
 
   return Native.ServerLogic
-      :map(function() return ui.Interfaces:GetInterface(interface) end) -- Query value of the variable
-      :toObservable(ui.Interfaces:GetInterface(interface))
+      :map(function() return ui.Interfaces:GetInterface(interface)--[[@as ui.Interface?]] end) -- Query value of the variable
+      :toObservable(ui.Interfaces:GetInterface(interface) --[[@as ui.Interface]])
 end
 
 return Derived

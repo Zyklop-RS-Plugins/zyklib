@@ -14,7 +14,7 @@ NpcHighlight.__index  = NpcHighlight
 local instances       = {}
 local instanceCount   = 0
 
----@type zyklib.EwentHandler
+---@type zyklib.EventHandler
 local draw_handler    = ewent.Native.EntityDraw:subscribeSuspended(function(event)
   if (event.entityType ~= EntityType.NPC) then return true end
   local npc = event.npcEntity
