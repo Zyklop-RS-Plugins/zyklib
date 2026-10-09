@@ -1,6 +1,6 @@
 local Derived = {}
 
-local Native = require "zyklib/ewent/Native"
+local Native = require "zyklib/reactive/Native"
 
 ---Creates an observable whose value is queried once every n client ticks. Usually derived from VarClient(s).
 ---@generic T The type of the observed value

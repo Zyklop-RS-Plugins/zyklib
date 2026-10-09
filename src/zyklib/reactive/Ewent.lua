@@ -1,4 +1,4 @@
-local EwentHandler = require("zyklib/ewent/EwentHandler")
+local EwentHandler = require("zyklib/reactive/EwentHandler")
 
 ---@class zyklib.Ewent<T, RetT>
 ---@field private listeners zyklib.EwentHandler<T, RetT>[]
@@ -172,7 +172,7 @@ end
 ---@param initial_value T
 ---@return zyklib.Observable<T>
 function Ewent:toObservable(initial_value)
-  local Observable = require("zyklib/ewent/Observable") -- Local require to avoid circular dependency
+  local Observable = require("zyklib/reactive/Observable") -- Local require to avoid circular dependency
 
   ---@type zyklib.EwentHandler
   local handler

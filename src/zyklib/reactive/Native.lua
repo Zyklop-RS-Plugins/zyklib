@@ -1,4 +1,4 @@
-local Ewent = require "zyklib/ewent/Ewent"
+local Ewent = require "zyklib/reactive/Ewent"
 local UniqueNameGenerator = require "zyklib/UniqueNameGenerator"
 
 local handler_name_generator = UniqueNameGenerator.new("api_util_handler_")

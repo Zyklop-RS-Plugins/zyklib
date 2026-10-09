@@ -1,7 +1,7 @@
 local api_util        = require "zyklib/api_util"
 local Highlight       = require "zyklib/highlights/Highlight"
 local HighlightParams = require "zyklib/highlights/HighlightParams"
-local ewent           = require "zyklib/ewent/init"
+local ewent           = require "zyklib/reactive/init"
 
 ---@class zyklib.NpcHighlight : zyklib.Highlight
 ---@field filter fun(npc: NPCEntity): boolean

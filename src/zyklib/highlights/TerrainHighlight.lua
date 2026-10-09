@@ -1,7 +1,7 @@
 local api_util = require("zyklib/api_util")
 local Highlight = require "zyklib/highlights/Highlight"
 local HighlightParams = require "zyklib/highlights/HighlightParams"
-local ewent           = require "zyklib/ewent/init"
+local ewent           = require "zyklib/reactive/init"
 
 ---@type table<zyklib.TerrainHighlight, boolean>
 local pending_instances = {}

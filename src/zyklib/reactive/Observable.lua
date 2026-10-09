@@ -1,4 +1,4 @@
-local Ewent = require("zyklib/ewent/Ewent")
+local Ewent = require("zyklib/reactive/Ewent")
 local lua_util = require("zyklib/lua_util")
 
 ---@class zyklib.Observable<T> : zyklib.Ewent<{old: T, new: T}, nil>

@@ -1,6 +1,6 @@
 return {
   lua_util = require "zyklib/lua_util",
-  ewent = require "zyklib/ewent/init",
+  reactive = require "zyklib/reactive/init",
   api_util = require "zyklib/api_util",
   MutableMesh = require "zyklib/MutableMesh",
   UniqueNameGenerator = require "zyklib/UniqueNameGenerator",

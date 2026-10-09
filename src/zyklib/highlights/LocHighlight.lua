@@ -1,7 +1,7 @@
 local api_util         = require "zyklib/api_util"
 local Highlight        = require "zyklib/highlights/Highlight"
 local HighlightParams  = require "zyklib/highlights/HighlightParams"
-local ewent            = require "zyklib/ewent/init"
+local ewent            = require "zyklib/reactive/init"
 
 --- A LocHighlight is a highlight that is drawn for LocEntity objects. You can specify a filter to determine which LocEntity objects should be highlighted,
 --- and a render function to determine how each LocEntity highlight should be drawn.
