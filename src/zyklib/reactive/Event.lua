@@ -1,9 +1,5 @@
 local EventHandler = require("zyklib/reactive/EventHandler")
 
-
----@field subscribe fun(self: zyklib.Event<T, RetT>, listener: (fun(payload: T): RetT), start_suspended: boolean?): zyklib.EventHandler<T, RetT>
----@field subscribeSuspended fun(self: zyklib.Event<T, RetT>, listener: (fun(payload: T): RetT)): zyklib.EventHandler<T, RetT>
-
 ---@class zyklib.Event<T, RetT>
 ---@field private listeners zyklib.EventHandler<T, RetT>[]
 ---@field private status_changed_callback fun(status: boolean)?
@@ -134,21 +130,20 @@ end
 ---@param f fun(payload: T, trigger_derived: (fun (payload: TargetT))) A function that takes the original payload and a function to trigger the derived event.
 ---@return zyklib.Event<TargetT, RetT> The filtered and mapped event
 function Event:derive(f)
-  local derived_event = nil
+  ---@type zyklib.Event
+  local derived_event
 
-  local handler = self:subscribe(function(payload)
+  local handler = self:subscribeSuspended(function(payload)
     local target_value = nil
 
     f(payload, function(target_payload)
-      if derived_event ~= nil then
-        target_value = derived_event:trigger(target_payload)
-      end
+      target_value = derived_event:trigger(target_payload)
     end)
 
     return target_value
   end)
 
-  derived_event = Event.new(function(status) handler:setSuspended(status) end)
+  derived_event = Event.new(function(status) handler:setActive(status) end)
 
   return derived_event
 end
@@ -182,10 +177,10 @@ function Event:toObservable(initial_value)
   local handler
 
   local observable = Observable.new(initial_value, nil, function(status)
-    handler:setSuspended(not status)
+    handler:setActive(status)
   end)
 
-  handler = self:subscribe(function(payload)
+  handler = self:subscribeSuspended(function(payload)
     observable:set(payload)
     return nil
   end)
