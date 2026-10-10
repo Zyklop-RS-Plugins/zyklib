@@ -67,4 +67,10 @@ function EventHandler:setSuspended(suspended)
   end
 end
 
+---Set the suspended state of this EventHandler to the inverse of the given boolean
+---@param active boolean
+function EventHandler:setActive(active)
+  self:setSuspended(not active)
+end
+
 return EventHandler

@@ -49,7 +49,7 @@ function Derived.interface(interface)
   -- TODO: Maybe it makes sense to memoize these internally.
 
   return Native.ServerLogic
-      :map(function() return ui.Interfaces:GetInterface(interface)--[[@as ui.Interface?]] end) -- Query value of the variable
+      :map(function() return ui.Interfaces:GetInterface(interface) end) -- Query value of the variable
       :toObservable(ui.Interfaces:GetInterface(interface) --[[@as ui.Interface]])
 end
 

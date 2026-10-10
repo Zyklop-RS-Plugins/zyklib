@@ -7,4 +7,5 @@ return {
   base64 = require "zyklib/base64",
   highlights = require "zyklib/highlights/init",
   bit = require "zyklib/bit",
+  lifecycle = require "zyklib/lifecycle"
 }
