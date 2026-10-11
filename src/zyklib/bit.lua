@@ -1,3 +1,6 @@
+---Helpers for packing and unpacking fixed-width bit fields in integers.
+---
+---!doctype module
 local bits = {}
 
 function bits.get(stride, index, value)

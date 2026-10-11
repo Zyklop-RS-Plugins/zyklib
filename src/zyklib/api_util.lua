@@ -1,4 +1,8 @@
 local UniqueNameGenerator = require "zyklib/UniqueNameGenerator"
+
+---Helpers for working with the plugin API.
+---
+---!doctype module
 local api_util = {}
 
 local shape_instance_name_generator = UniqueNameGenerator.new("shape_instance_")

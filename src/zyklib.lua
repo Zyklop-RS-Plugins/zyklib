@@ -1,1 +1,13 @@
-return require "zyklib/init"
+return {
+  lua_util = require "zyklib/lua_util",
+  array = require "zyklib/array",
+  reactive = require "zyklib/reactive",
+  api_util = require "zyklib/api_util",
+  MutableMesh = require "zyklib/MutableMesh",
+  UniqueNameGenerator = require "zyklib/UniqueNameGenerator",
+  base64 = require "zyklib/base64",
+  highlights = require "zyklib/highlights",
+  bit = require "zyklib/bit",
+  lifecycle = require "zyklib/lifecycle",
+  game = require "zyklib/game"
+}

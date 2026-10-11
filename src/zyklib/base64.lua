@@ -1,3 +1,7 @@
+---Base64 encoding and decoding.
+---
+---!doctype module
+---@class zyklib.base64
 local base64 = {}
 
 ---@type string

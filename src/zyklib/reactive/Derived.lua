@@ -53,4 +53,13 @@ function Derived.interface(interface)
       :toObservable(ui.Interfaces:GetInterface(interface) --[[@as ui.Interface]])
 end
 
+---Creates an observable for a specific interface that can be subscribed to to be notified when the interface opens and closes.
+---@param component ComponentId The id of the interface in question
+---@return zyklib.Observable<ui.Component?>
+function Derived.component(component)
+  return Native.ServerLogic
+      :map(function() return ui.Interfaces:GetComponent(component) end) -- Query value of the variable
+      :toObservable(ui.Interfaces:GetInterface(component) --[[@as ui.Component]])
+end
+
 return Derived

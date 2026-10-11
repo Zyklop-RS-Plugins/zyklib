@@ -1,7 +1,11 @@
-local reactive = require "zyklib/reactive/init"
+local reactive = require "zyklib/reactive"
 
+---Plugin lifecycle handling, such as shutdown notification.
+---
+---!doctype module
 local lifecycle = {}
 
+---The shutdown event.
 ---@type zyklib.Event<nil, nil>
 lifecycle.shutdown_event = reactive.Event.new()
 

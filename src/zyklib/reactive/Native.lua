@@ -6,7 +6,7 @@ local handler_name_generator = UniqueNameGenerator.new("api_util_handler_")
 ---Create a new event specifically for game events.
 ---@generic T, RetT
 ---@param game_event EventSubscription<T, RetT>
----@return zyklib.Event<T, RetT>?
+---@return zyklib.Event<T, RetT>
 local function forNativeGameEvent(game_event)
   ---@type string?
   local active_native_listener = nil
