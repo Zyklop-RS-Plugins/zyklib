@@ -1,16 +1,21 @@
-.. zyklib documentation master file, created by
-   sphinx-quickstart on Sat Oct 10 22:16:11 2026.
-   You can adapt this file completely to your liking, but it should at least
+.. You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-zyklib documentation!
+Zyklib
 ==================================
 
-Zyklib is the attempt at a standard library for the RuneScape plugin API.
+This is the table of contents for the Zyklib documentation.
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Introduction
+
+   introduction
+   getting_started
+
+.. toctree::
+   :maxdepth: 2
+   :caption: API Reference
 
    array
    lua_util
@@ -29,5 +34,4 @@ Indices and tables
 ==================
 
 * :ref:`genindex`
-* :ref:`modindex`
 * :ref:`search`
