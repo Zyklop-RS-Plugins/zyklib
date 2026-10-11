@@ -1,7 +1,7 @@
 local api_util        = require "zyklib/api_util"
 local Highlight       = require "zyklib/highlights/Highlight"
 local HighlightParams = require "zyklib/highlights/HighlightParams"
-local ewent           = require "zyklib/reactive"
+local game_events     = require "zyklib/game_events"
 
 --- @class zyklib.NpcHighlight : zyklib.Highlight
 --- @field filter fun(npc: NPCEntity): boolean
@@ -15,7 +15,7 @@ local instances       = {}
 local instanceCount   = 0
 
 --- @type zyklib.reactive.EventHandler
-local draw_handler    = ewent.Native.EntityDraw:subscribeSuspended(function(event)
+local draw_handler    = game_events.native.EntityDraw:subscribeSuspended(function(event)
   if (event.entityType ~= EntityType.NPC) then return true end
   local npc = event.npcEntity
 

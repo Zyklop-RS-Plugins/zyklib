@@ -3,6 +3,7 @@ local reactive = require "zyklib/reactive"
 --- Plugin lifecycle handling, such as shutdown notification.
 ---
 --- !doctype module
+--- @class zyklib.lifecycle
 local lifecycle = {}
 
 --- The shutdown event.

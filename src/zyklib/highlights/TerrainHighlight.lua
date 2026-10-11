@@ -1,7 +1,7 @@
-local api_util = require("zyklib/api_util")
-local Highlight = require "zyklib/highlights/Highlight"
-local HighlightParams = require "zyklib/highlights/HighlightParams"
-local ewent           = require "zyklib/reactive"
+local api_util          = require("zyklib/api_util")
+local Highlight         = require "zyklib/highlights/Highlight"
+local HighlightParams   = require "zyklib/highlights/HighlightParams"
+local game_events       = require "zyklib/game_events"
 
 --- @type table<zyklib.TerrainHighlight, boolean>
 local pending_instances = {}
@@ -76,7 +76,7 @@ function TerrainHighlight:propagate_param_change()
 end
 
 --- @type zyklib.reactive.EventHandler
-local listener = ewent.Native.ServerLogic:subscribe(function()
+local listener = game_events.native.ServerLogic:subscribe(function()
   for instance, _ in pairs(pending_instances) do
     create_if_available(instance)
 

@@ -1,3 +1,6 @@
+--- Derived observables built on top of the native game events.
+---
+--- !doctype module
 --- @class zyklib.game_events.derived
 local derived = {}
 

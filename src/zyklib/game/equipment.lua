@@ -1,7 +1,7 @@
 --- Helpers for the player's equipment.
 ---
 --- !doctype module
---- @class zyklib.equipment
+--- @class zyklib.game.equipment
 local equipment = {}
 
 --- @alias zyklib.game.EquipmentSlotId 1 | 2 | 3 | 4 | 5 | 6 | 8 | 10 | 11 | 13 | 14 | 18
@@ -34,6 +34,7 @@ local function resolveSlotId(slot)
   end
 end
 
+--- Get the worn item in an equipment slot.
 --- @param slot zyklib.game.EquipmentSlot
 --- @return InvSlot?
 function equipment.getSlot(slot)
@@ -46,6 +47,7 @@ function equipment.getSlot(slot)
   return nil
 end
 
+--- Get the contents of an equipment slot as an observable value.
 --- @param slot zyklib.game.EquipmentSlot
 --- @return zyklib.reactive.Observable<InvSlot>?
 function equipment.observableSlot(slot)
@@ -53,7 +55,7 @@ function equipment.observableSlot(slot)
 
   local slot_id = resolveSlotId(slot)
 
-  return zyklib.game_events.Native.InventoryUpdated
+  return zyklib.game_events.native.InventoryUpdated
       :filter(function(payload)
         log("inv updated ", zyklib.api_util.to_plain_table(payload))
         return payload.inv.id == config.Inv.WORN.id and zyklib.array.includes(payload.slotsUpdated, slot_id)
