@@ -5,21 +5,21 @@ local ewent            = require "zyklib/reactive"
 
 --- A LocHighlight is a highlight that is drawn for LocEntity objects. You can specify a filter to determine which LocEntity objects should be highlighted,
 --- and a render function to determine how each LocEntity highlight should be drawn.
----@class zyklib.LocHighlight : zyklib.Highlight
----@field filter LocListFilterSettings
----@field render fun(npc: LocEntity): ShapeListDrawSettings
----@field instances table<LocEntity, {shape_instance: ShapeInstance}>
----@field active boolean
+--- @class zyklib.LocHighlight : zyklib.Highlight
+--- @field filter LocListFilterSettings
+--- @field render fun(npc: LocEntity): ShapeListDrawSettings
+--- @field instances table<LocEntity, {shape_instance: ShapeInstance}>
+--- @field active boolean
 local LocHighlight     = setmetatable({}, { __index = Highlight })
 LocHighlight.__index   = LocHighlight
 
----@type table<zyklib.LocHighlight, boolean>
+--- @type table<zyklib.LocHighlight, boolean>
 local active_instances = {}
 local instanceCount    = 0
 
----Update the ShapeInstances for a given LocHighlight to synchronize existing ShapeEntities with the current set of LocEntity objects that match the filter.
----This will create new ShapeInstances for newly matching LocEntity objects, and destroy ShapeInstances for LocEntity objects that no longer exist or match the filter.
----@param instance zyklib.LocHighlight
+--- Update the ShapeInstances for a given LocHighlight to synchronize existing ShapeEntities with the current set of LocEntity objects that match the filter.
+--- This will create new ShapeInstances for newly matching LocEntity objects, and destroy ShapeInstances for LocEntity objects that no longer exist or match the filter.
+--- @param instance zyklib.LocHighlight
 local function update_instances(instance)
   local locs = instance.active and LocList.Filter(instance.filter) or {}
 
@@ -65,7 +65,7 @@ local function update_instances(instance)
 end
 
 
----@type zyklib.EventHandler
+--- @type zyklib.reactive.EventHandler
 local draw_handler = ewent.Native.ServerLogic:subscribe(function(event)
   for instance, _ in pairs(active_instances) do
     update_instances(instance)
@@ -77,11 +77,11 @@ local function update_logic_hook()
   draw_handler:setSuspended(instanceCount == 0)
 end
 
----@param filter LocListFilterSettings The filter object that determines which LocEntity objects should be highlighted.
----@param render fun(loc: LocEntity): ShapeListDrawSettings
----@return zyklib.LocHighlight
+--- @param filter LocListFilterSettings The filter object that determines which LocEntity objects should be highlighted.
+--- @param render fun(loc: LocEntity): ShapeListDrawSettings
+--- @return zyklib.LocHighlight
 function LocHighlight.new(filter, render)
-  ---@type zyklib.LocHighlight
+  --- @type zyklib.LocHighlight
   local self = setmetatable({}, LocHighlight)
   self:init()
   self.filter = filter
@@ -92,8 +92,8 @@ function LocHighlight.new(filter, render)
   return self
 end
 
----Deactivates this LocHighlight and removes it from the list of active highlights. This will stop it from being drawn.
----@return self
+--- Deactivates this LocHighlight and removes it from the list of active highlights. This will stop it from being drawn.
+--- @return self
 function LocHighlight:deactivate()
   if self.active then
     self.active = false
@@ -107,8 +107,8 @@ function LocHighlight:deactivate()
   return self
 end
 
----Activates this LocHighlight and adds it to the list of active highlights. This will cause it to be drawn.
----@return self
+--- Activates this LocHighlight and adds it to the list of active highlights. This will cause it to be drawn.
+--- @return self
 function LocHighlight:activate()
   if not self.active then
     self.active = true

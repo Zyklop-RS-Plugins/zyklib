@@ -3,6 +3,10 @@ docs_python := if os() == "windows" { "docs/.venv/Scripts/python.exe" } else { "
 docs: docs_venv
     {{docs_python}} -m sphinx -M html docs docs/_build -v -E
 
+# Builds the docs and serves them on http://localhost:<port>
+docs-serve port="8000": docs
+    {{docs_python}} -m http.server {{port}} --directory docs/_build/html
+
 # Installs the docs requirements only when docs/requirements.txt has changed.
 # The lua-ls submodule is installed in editable mode, so it always uses the checked-out version.
 [private]

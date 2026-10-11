@@ -1,4 +1,5 @@
 sphinx
 myst-parser
 sphinx-rtd-theme
+shibuya
 -e ./docs/lua-ls

@@ -1,7 +1,7 @@
----@class zyklib.UniqueNameGenerator
----@field prefix string
----@field predicate fun(name: string): boolean
----@field private counter integer
+--- @class zyklib.UniqueNameGenerator
+--- @field prefix string
+--- @field predicate fun(name: string): boolean
+--- @field private counter integer
 local UniqueNameGenerator = {}
 UniqueNameGenerator.__index = UniqueNameGenerator
 

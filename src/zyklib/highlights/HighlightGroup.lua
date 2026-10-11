@@ -1,13 +1,13 @@
 local Highlight = require "zyklib/highlights/Highlight"
 
----@class zyklib.HighlightGroup : zyklib.Highlight
----@field highlights zyklib.Highlight[]
+--- @class zyklib.HighlightGroup : zyklib.Highlight
+--- @field highlights zyklib.Highlight[]
 local HighlightGroup = setmetatable({}, { __index = Highlight })
 HighlightGroup.__index = HighlightGroup
 
----Creates a new HighlightGroup
----@param children zyklib.Highlight[] List of child highlights
----@return zyklib.HighlightGroup
+--- Creates a new HighlightGroup
+--- @param children zyklib.Highlight[] List of child highlights
+--- @return zyklib.HighlightGroup
 function HighlightGroup.new(children)
   local self = setmetatable({}, HighlightGroup)
   self:init()

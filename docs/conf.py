@@ -44,23 +44,19 @@ lua_ls_backend = "luals"
 lua_ls_default_options = {
     "members": "",
     "undoc-members": "",
-    "member-order": "alphabetical",
+    "member-order": "groupwise",
+    "annotate-require": "force",
+    "require-separator": "/",
 }
-lua_ls_class_default_function_name = "new"
 lua_ls_class_default_force_non_colon = True
-lua_ls_apidoc_roots = {
-    "zyklib": {
-        "path": "src/zyklib",
-        "options": {
-            "undoc-members": "",
-        },
-        "format": "md",
-    },
-}
+
 lua_ls_apidoc_separate_members = True
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_theme = 'sphinx_rtd_theme'
+html_theme = 'shibuya'
+html_theme_options = {
+    "globaltoc_expand_depth": 2,
+}
 html_static_path = ['_static']

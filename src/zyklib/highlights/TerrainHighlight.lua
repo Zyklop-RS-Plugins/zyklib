@@ -3,10 +3,10 @@ local Highlight = require "zyklib/highlights/Highlight"
 local HighlightParams = require "zyklib/highlights/HighlightParams"
 local ewent           = require "zyklib/reactive"
 
----@type table<zyklib.TerrainHighlight, boolean>
+--- @type table<zyklib.TerrainHighlight, boolean>
 local pending_instances = {}
 
----@param self zyklib.TerrainHighlight
+--- @param self zyklib.TerrainHighlight
 local function create_if_available(self)
   if not self.shape_created and api_util.bounds_available(self.bounds) then
     self.instance = api_util.unique_shape_instance(self.generator())
@@ -15,22 +15,22 @@ local function create_if_available(self)
   end
 end
 
----@class zyklib.TerrainHighlight : zyklib.Highlight
----@field bounds Rect Bounds in map square coordinate.
----@field generator fun(): ShapeData
----@field instance ShapeInstance?
----@field shape_created boolean
+--- @class zyklib.TerrainHighlight : zyklib.Highlight
+--- @field bounds Rect Bounds in map square coordinate.
+--- @field generator fun(): ShapeData
+--- @field instance ShapeInstance?
+--- @field shape_created boolean
 local TerrainHighlight = setmetatable({}, { __index = Highlight })
 TerrainHighlight.__index = TerrainHighlight
 
----@param bounds Rect Bounds in map square coordinate.
----@param generator fun(): ShapeData
----@return zyklib.TerrainHighlight
+--- @param bounds Rect Bounds in map square coordinate.
+--- @param generator fun(): ShapeData
+--- @return zyklib.TerrainHighlight
 function TerrainHighlight.new(
     bounds,
     generator
 )
-  ---@type zyklib.TerrainHighlight
+  --- @type zyklib.TerrainHighlight
   local self = setmetatable({}, TerrainHighlight)
   self:init()
   self.bounds = bounds
@@ -41,8 +41,8 @@ function TerrainHighlight.new(
   return self
 end
 
----Activates this TerrainHighlight so that it will be drawn. If the bounds are not yet available, it will be drawn as soon as they are.
----@return zyklib.TerrainHighlight
+--- Activates this TerrainHighlight so that it will be drawn. If the bounds are not yet available, it will be drawn as soon as they are.
+--- @return zyklib.TerrainHighlight
 function TerrainHighlight:activate()
   create_if_available(self)
 
@@ -53,8 +53,8 @@ function TerrainHighlight:activate()
   return self
 end
 
----Deactivates this TerrainHighlight so that it will no longer be drawn. The existing shape instance will be destroyed and will be recreated if the highlight is activated again.
----@return self
+--- Deactivates this TerrainHighlight so that it will no longer be drawn. The existing shape instance will be destroyed and will be recreated if the highlight is activated again.
+--- @return self
 function TerrainHighlight:deactivate()
   if self.instance then
     self.instance:Destroy()
@@ -75,7 +75,7 @@ function TerrainHighlight:propagate_param_change()
   end
 end
 
----@type zyklib.EventHandler
+--- @type zyklib.reactive.EventHandler
 local listener = ewent.Native.ServerLogic:subscribe(function()
   for instance, _ in pairs(pending_instances) do
     create_if_available(instance)

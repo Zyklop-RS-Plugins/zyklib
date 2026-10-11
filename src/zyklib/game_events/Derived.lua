@@ -1,11 +1,11 @@
 local Derived = {}
 
-local Native = require "zyklib/reactive/Native"
+local Native = require "zyklib/game_events/Native"
 
----Creates an observable whose value is queried once every n client ticks. Usually derived from VarClient(s).
----@generic T The type of the observed value
----@param value_function fun():T The function that computes the current value of this observable, usually by checking the value(s) of one or more VarClient.
----@param tick_rate integer? How often the value for this observable should be queried. Given in client ticks. Defaults to 1.
+--- Creates an observable whose value is queried once every n client ticks. Usually derived from VarClient(s).
+--- @generic T The type of the observed value
+--- @param value_function fun():T The function that computes the current value of this observable, usually by checking the value(s) of one or more VarClient.
+--- @param tick_rate integer? How often the value for this observable should be queried. Given in client ticks. Defaults to 1.
 function Derived.forClientVariables(value_function, tick_rate)
   tick_rate = tick_rate or 1
 
@@ -15,9 +15,9 @@ function Derived.forClientVariables(value_function, tick_rate)
       :toObservable(value_function())
 end
 
----Construct an observable for any VarClient or VarPlayer variable.
----@param var VarPlayer The player variable to be observed. Must be a variable that is actually transmitted to the game client.
----@return zyklib.Observable
+--- Construct an observable for any VarClient or VarPlayer variable.
+--- @param var VarPlayer The player variable to be observed. Must be a variable that is actually transmitted to the game client.
+--- @return zyklib.reactive.Observable
 function Derived.forPlayerVariable(var)
   -- Determine the base variable if necessary
   local base_var = var.baseVar or var
@@ -28,10 +28,10 @@ function Derived.forPlayerVariable(var)
       :toObservable(var.value)
 end
 
----Construct an observable for any VarClient or VarPlayer variable. See Derived.forPlayerVariable or Derived.forClientVariables for more detail
----@param var VarType
----@param tick_rate integer? How often the value for this observable should be queried. It is updated every n ticks. Only applies for VarClient variables.
----@return zyklib.Observable
+--- Construct an observable for any VarClient or VarPlayer variable. See Derived.forPlayerVariable or Derived.forClientVariables for more detail
+--- @param var VarType
+--- @param tick_rate integer? How often the value for this observable should be queried. It is updated every n ticks. Only applies for VarClient variables.
+--- @return zyklib.reactive.Observable
 function Derived.forVariable(var, tick_rate)
   if var.typeName == "VarClient" then
     return Derived.forClientVariables(function() return var.value end, tick_rate)
@@ -42,9 +42,9 @@ function Derived.forVariable(var, tick_rate)
   end
 end
 
----Creates an observable for a specific interface that can be subscribed to to be notified when the interface opens and closes.
----@param interface InterfaceId The id of the interface in question
----@return zyklib.Observable<ui.Interface?>
+--- Creates an observable for a specific interface that can be subscribed to to be notified when the interface opens and closes.
+--- @param interface InterfaceId The id of the interface in question
+--- @return zyklib.reactive.Observable<ui.Interface?>
 function Derived.interface(interface)
   -- TODO: Maybe it makes sense to memoize these internally.
 
@@ -53,9 +53,9 @@ function Derived.interface(interface)
       :toObservable(ui.Interfaces:GetInterface(interface) --[[@as ui.Interface]])
 end
 
----Creates an observable for a specific interface that can be subscribed to to be notified when the interface opens and closes.
----@param component ComponentId The id of the interface in question
----@return zyklib.Observable<ui.Component?>
+--- Creates an observable for a specific interface that can be subscribed to to be notified when the interface opens and closes.
+--- @param component ComponentId The id of the interface in question
+--- @return zyklib.reactive.Observable<ui.Component?>
 function Derived.component(component)
   return Native.ServerLogic
       :map(function() return ui.Interfaces:GetComponent(component) end) -- Query value of the variable

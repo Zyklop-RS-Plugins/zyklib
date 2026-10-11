@@ -3,15 +3,15 @@ local UniqueNameGenerator = require "zyklib/UniqueNameGenerator"
 
 local handler_name_generator = UniqueNameGenerator.new("api_util_handler_")
 
----Create a new event specifically for game events.
----@generic T, RetT
----@param game_event EventSubscription<T, RetT>
----@return zyklib.Event<T, RetT>
+--- Create a new event specifically for game events.
+--- @generic T, RetT
+--- @param game_event EventSubscription<T, RetT>
+--- @return zyklib.reactive.Event<T, RetT>
 local function forNativeGameEvent(game_event)
-  ---@type string?
+  --- @type string?
   local active_native_listener = nil
 
-  ---@type zyklib.Event
+  --- @type zyklib.reactive.Event
   local event
 
   -- We need to separate declaration and assignment so that event is properly in scope for the callback function.

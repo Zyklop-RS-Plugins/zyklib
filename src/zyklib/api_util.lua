@@ -1,16 +1,16 @@
 local UniqueNameGenerator = require "zyklib/UniqueNameGenerator"
 
----Helpers for working with the plugin API.
+--- Helpers for working with the plugin API.
 ---
----!doctype module
----@class zyklib.api_util
+--- !doctype module
+--- @class zyklib.api_util
 local api_util = {}
 
 local shape_instance_name_generator = UniqueNameGenerator.new("shape_instance_")
 
 ---
----@param shape_data ShapeData?
----@return ShapeInstance
+--- @param shape_data ShapeData?
+--- @return ShapeInstance
 function api_util.unique_shape_instance(shape_data)
   local instance = ShapeList.CreateInstance(shape_instance_name_generator:next()) --[[@as ShapeInstance]]
 
@@ -21,22 +21,22 @@ function api_util.unique_shape_instance(shape_data)
   return instance
 end
 
----Creates a color value from red, green, blue, and alpha components
----@param r integer
----@param g integer
----@param b integer
----@param a integer
----@return ColourRGBA
+--- Creates a color value from red, green, blue, and alpha components
+--- @param r integer
+--- @param g integer
+--- @param b integer
+--- @param a integer
+--- @return ColourRGBA
 function api_util.color_rgba(r, g, b, a)
   return (r & 0xFF) << 24 | (g & 0xFF) << 16 | (b & 0xFF) << 8 | (a & 0xFF)
 end
 
----Extracts red, green, blue, and alpha components from a color value
----@param color ColourRGBA
----@return integer r
----@return integer g
----@return integer b
----@return integer a
+--- Extracts red, green, blue, and alpha components from a color value
+--- @param color ColourRGBA
+--- @return integer r
+--- @return integer g
+--- @return integer b
+--- @return integer a
 function api_util.color_to_rgba(color)
   local r = (color >> 24) & 0xFF
   local g = (color >> 16) & 0xFF
@@ -46,16 +46,16 @@ function api_util.color_to_rgba(color)
   return r, g, b, a
 end
 
----@param loc LocEntity
----@return integer
+--- @param loc LocEntity
+--- @return integer
 function api_util.loc_identity(loc)
   return ((loc.configID * 12800 + loc.coordGrid.x) * 12800 + loc.coordGrid.z) * 4 + loc.coordGrid.level
 end
 
----Takes any value and turns it into a plain lua value.
----Particularly, this handles userdata values by calling all getter functions on the metatable and returning a table of the results.
----@param value userdata | table | boolean | number | string | nil
----@return table | boolean | number | string | nil
+--- Takes any value and turns it into a plain lua value.
+--- Particularly, this handles userdata values by calling all getter functions on the metatable and returning a table of the results.
+--- @param value userdata | table | boolean | number | string | nil
+--- @return table | boolean | number | string | nil
 function api_util.to_plain_table(value)
   local value_type = type(value)
 
@@ -106,10 +106,10 @@ function api_util.to_plain_table(value)
   return nil
 end
 
----Resolves the ground height at a given coordinate, returning a Vector3 with the original x and z coordinates and the resolved y coordinate.
----@param coords CoordFine
----@param kind HeightOffsetType?
----@return Vector3
+--- Resolves the ground height at a given coordinate, returning a Vector3 with the original x and z coordinates and the resolved y coordinate.
+--- @param coords CoordFine
+--- @param kind HeightOffsetType?
+--- @return Vector3
 function api_util.resolve_ground_height(coords, kind)
   kind = kind or HeightOffsetType.GROUND_DECOR
 
@@ -122,9 +122,9 @@ function api_util.resolve_ground_height(coords, kind)
   return Vector3.new(coords.x, height, coords.z)
 end
 
----Checks whether a given rectangle of mapsquares (NOT tiles) has its ground height available.
----@param bounds Rect
----@return boolean
+--- Checks whether a given rectangle of mapsquares (NOT tiles) has its ground height available.
+--- @param bounds Rect
+--- @return boolean
 function api_util.bounds_available(bounds)
   if bounds == nil then return false end
 
@@ -135,9 +135,9 @@ function api_util.bounds_available(bounds)
   return a and b
 end
 
----Create a bound rectangle from a set of tile coordinates. The rectangle will be the smallest rectangle that contains all tiles.
----@param tiles CoordGrid[]
----@return Rect
+--- Create a bound rectangle from a set of tile coordinates. The rectangle will be the smallest rectangle that contains all tiles.
+--- @param tiles CoordGrid[]
+--- @return Rect
 function api_util.map_square_rect_from_tiles(tiles)
   local min_x = math.huge
   local min_z = math.huge

@@ -10,24 +10,30 @@ This is the table of contents for the Zyklib documentation.
    :maxdepth: 2
    :caption: Introduction
 
-   introduction
-   getting_started
+   src/introduction
+   src/getting_started
 
 .. toctree::
    :maxdepth: 2
-   :caption: API Reference
+   :caption: General
 
-   array
-   lua_util
-   api_util
-   base64
-   bit
-   lifecycle
-   game
-   reactive
-   highlights
-   MutableMesh
-   UniqueNameGenerator
+   src/array
+   src/objects
+   src/base64
+   src/reactive
+   src/bits
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Game
+
+   src/game_events
+   src/api_util
+   src/lifecycle
+   src/game
+   src/highlights
+   src/MutableMesh
+   src/UniqueNameGenerator
 
 
 Indices and tables

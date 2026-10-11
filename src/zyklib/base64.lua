@@ -1,15 +1,15 @@
----Base64 encoding and decoding.
+--- Functions for encoding and decoding of [Base64](https://en.wikipedia.org/wiki/Base64) strings.
 ---
----!doctype module
----@class zyklib.base64
+--- !doctype module
+--- @class zyklib.base64
 local base64 = {}
 
----@type string
+--- @type string
 local alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
 
----Encodes a binary string as Base64.
----@param data string
----@return string
+--- Encodes a binary string as Base64.
+--- @param data string Any binary data represented as a Lua string.
+--- @return string The Base64 encoding of the data.
 function base64.encode(data)
   return ((data:gsub(".", function(x)
     local byte = x:byte()
@@ -37,9 +37,9 @@ function base64.encode(data)
   end) .. ({ "", "==", "=" })[#data % 3 + 1])
 end
 
----Decodes a Base64 string into its binary string representation.
----@param data string
----@return string
+--- Decodes a Base64 string into its binary string representation.
+--- @param data string A Base64 string.
+--- @return string The decoded Base64 string as binary data.
 function base64.decode(data)
   data = data:gsub("[^" .. alphabet .. "=]", "")
 

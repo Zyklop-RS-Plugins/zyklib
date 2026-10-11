@@ -3,18 +3,18 @@ local Highlight       = require "zyklib/highlights/Highlight"
 local HighlightParams = require "zyklib/highlights/HighlightParams"
 local ewent           = require "zyklib/reactive"
 
----@class zyklib.NpcHighlight : zyklib.Highlight
----@field filter fun(npc: NPCEntity): boolean
----@field render fun(npc: NPCEntity): ShapeListDrawSettings
----@field active boolean
+--- @class zyklib.NpcHighlight : zyklib.Highlight
+--- @field filter fun(npc: NPCEntity): boolean
+--- @field render fun(npc: NPCEntity): ShapeListDrawSettings
+--- @field active boolean
 local NpcHighlight    = setmetatable({}, { __index = Highlight })
 NpcHighlight.__index  = NpcHighlight
 
----@type table<zyklib.NpcHighlight, boolean>
+--- @type table<zyklib.NpcHighlight, boolean>
 local instances       = {}
 local instanceCount   = 0
 
----@type zyklib.EventHandler
+--- @type zyklib.reactive.EventHandler
 local draw_handler    = ewent.Native.EntityDraw:subscribeSuspended(function(event)
   if (event.entityType ~= EntityType.NPC) then return true end
   local npc = event.npcEntity
@@ -41,11 +41,11 @@ local function update_draw_handler()
   draw_handler:setSuspended(instanceCount == 0)
 end
 
----@param filter fun(npc: NPCEntity): boolean
----@param render fun(npc: NPCEntity): ShapeListDrawSettings
----@return zyklib.NpcHighlight
+--- @param filter fun(npc: NPCEntity): boolean
+--- @param render fun(npc: NPCEntity): ShapeListDrawSettings
+--- @return zyklib.NpcHighlight
 function NpcHighlight.new(filter, render)
-  ---@type zyklib.NpcHighlight
+  --- @type zyklib.NpcHighlight
   local self = setmetatable({}, NpcHighlight)
   self:init()
   self.filter = filter
@@ -55,8 +55,8 @@ function NpcHighlight.new(filter, render)
   return self
 end
 
----Deactivates this NPC highlight and removes it from the list of active highlights. This will stop it from being drawn.
----@return self
+--- Deactivates this NPC highlight and removes it from the list of active highlights. This will stop it from being drawn.
+--- @return self
 function NpcHighlight:deactivate()
   if self.active then
     self.active = false
@@ -69,8 +69,8 @@ function NpcHighlight:deactivate()
   return self
 end
 
----Activates this NPC hightlight and adds it to the list of active highlights. This will cause it to be drawn.
----@return self
+--- Activates this NPC hightlight and adds it to the list of active highlights. This will cause it to be drawn.
+--- @return self
 function NpcHighlight:activate()
   if not self.active then
     self.active = true

@@ -1,21 +1,21 @@
----@alias ColourRGBA integer
+--- @alias ColourRGBA integer
 
----@class Mesh.Vertex
----@field pos Vector3
----@field color_rgba ColourRGBA
+--- @class Mesh.Vertex
+--- @field pos Vector3
+--- @field color_rgba ColourRGBA
 
----@class zyklib.MutableMesh.VertexRef
----@field vertex Mesh.Vertex
----@field index integer
+--- @class zyklib.MutableMesh.VertexRef
+--- @field vertex Mesh.Vertex
+--- @field index integer
 
----@class zyklib.MutableMesh
----@field private vertices Mesh.Vertex[]
----@field private triangle_indices integer[]
----@field private line_indices integer[]
+--- @class zyklib.MutableMesh
+--- @field private vertices Mesh.Vertex[]
+--- @field private triangle_indices integer[]
+--- @field private line_indices integer[]
 local MutableMesh = {}
 MutableMesh.__index = MutableMesh
 
----@return zyklib.MutableMesh
+--- @return zyklib.MutableMesh
 function MutableMesh.new()
     return setmetatable({
         vertices = {},
@@ -24,26 +24,26 @@ function MutableMesh.new()
     }, MutableMesh)
 end
 
----@return integer
+--- @return integer
 function MutableMesh:vertex_count()
     return #self.vertices
 end
 
----@return integer
+--- @return integer
 function MutableMesh:triangle_count()
     return #self.triangle_indices // 3
 end
 
----@return integer
+--- @return integer
 function MutableMesh:line_count()
     return #self.line_indices // 2
 end
 
----@param pos Vector3
----@param color? ColourRGBA
----@return zyklib.MutableMesh.VertexRef
+--- @param pos Vector3
+--- @param color? ColourRGBA
+--- @return zyklib.MutableMesh.VertexRef
 function MutableMesh:createVertex(pos, color)
-    ---@type Mesh.Vertex
+    --- @type Mesh.Vertex
     local vertex = {
         pos = pos,
         color_rgba = color or 0xFFFFFFFF,
@@ -58,33 +58,33 @@ function MutableMesh:createVertex(pos, color)
     }
 end
 
----@param v0 zyklib.MutableMesh.VertexRef
----@param v1 zyklib.MutableMesh.VertexRef
----@param v2 zyklib.MutableMesh.VertexRef
+--- @param v0 zyklib.MutableMesh.VertexRef
+--- @param v1 zyklib.MutableMesh.VertexRef
+--- @param v2 zyklib.MutableMesh.VertexRef
 function MutableMesh:triangle(v0, v1, v2)
     self.triangle_indices[#self.triangle_indices + 1] = v0.index
     self.triangle_indices[#self.triangle_indices + 1] = v1.index
     self.triangle_indices[#self.triangle_indices + 1] = v2.index
 end
 
----@param v0 zyklib.MutableMesh.VertexRef
----@param v1 zyklib.MutableMesh.VertexRef
+--- @param v0 zyklib.MutableMesh.VertexRef
+--- @param v1 zyklib.MutableMesh.VertexRef
 function MutableMesh:line(v0, v1)
     self.line_indices[#self.line_indices + 1] = v0.index
     self.line_indices[#self.line_indices + 1] = v1.index
 end
 
----@param v0 zyklib.MutableMesh.VertexRef
----@param v1 zyklib.MutableMesh.VertexRef
----@param v2 zyklib.MutableMesh.VertexRef
----@param v3 zyklib.MutableMesh.VertexRef
+--- @param v0 zyklib.MutableMesh.VertexRef
+--- @param v1 zyklib.MutableMesh.VertexRef
+--- @param v2 zyklib.MutableMesh.VertexRef
+--- @param v3 zyklib.MutableMesh.VertexRef
 function MutableMesh:quad(v0, v1, v2, v3)
     self:triangle(v0, v1, v2)
     self:triangle(v0, v2, v3)
 end
 
----@param offset Vector3
----@return self
+--- @param offset Vector3
+--- @return self
 function MutableMesh:translate(offset)
     for _, vertex in ipairs(self.vertices) do
         vertex.pos.x = vertex.pos.x + offset.x
@@ -95,8 +95,8 @@ function MutableMesh:translate(offset)
     return self
 end
 
----@param factor number
----@return self
+--- @param factor number
+--- @return self
 function MutableMesh:scale(factor)
     for _, vertex in ipairs(self.vertices) do
         vertex.pos.x = vertex.pos.x * factor
@@ -107,8 +107,8 @@ function MutableMesh:scale(factor)
     return self
 end
 
----@param factor Vector3
----@return self
+--- @param factor Vector3
+--- @return self
 function MutableMesh:scale3(factor)
     for _, vertex in ipairs(self.vertices) do
         vertex.pos = vertex.pos * factor
@@ -117,8 +117,8 @@ function MutableMesh:scale3(factor)
     return self
 end
 
----@param color ColourRGBA
----@return self
+--- @param color ColourRGBA
+--- @return self
 function MutableMesh:recolor(color)
     for _, vertex in ipairs(self.vertices) do
         vertex.color_rgba = color
@@ -127,8 +127,8 @@ function MutableMesh:recolor(color)
     return self
 end
 
----Turns the mesh inside out by reversing the winding order of all triangles.
----@return self
+--- Turns the mesh inside out by reversing the winding order of all triangles.
+--- @return self
 function MutableMesh:inside_out()
     local indices = self.triangle_indices
 
@@ -139,8 +139,8 @@ function MutableMesh:inside_out()
     return self
 end
 
----@param ... zyklib.MutableMesh
----@return self
+--- @param ... zyklib.MutableMesh
+--- @return self
 function MutableMesh:add(...)
     for i = 1, select("#", ...) do
         local mesh = select(i, ...)
@@ -162,8 +162,8 @@ function MutableMesh:add(...)
     return self
 end
 
----Create a ShapeData object from this mesh. This is a snapshot of the current state of the mesh, and will not reflect any future changes.
----@return ShapeData
+--- Create a ShapeData object from this mesh. This is a snapshot of the current state of the mesh, and will not reflect any future changes.
+--- @return ShapeData
 function MutableMesh:shapeData()
     local positions = {}
     local colors = {}
@@ -203,8 +203,8 @@ function MutableMesh:lines_only()
     return self
 end
 
----Creates a simple unit cube with vertices between (0,0,0) and (1,1,1). The cube is made of 12 triangles (2 per face).
----@return zyklib.MutableMesh
+--- Creates a simple unit cube with vertices between (0,0,0) and (1,1,1). The cube is made of 12 triangles (2 per face).
+--- @return zyklib.MutableMesh
 function MutableMesh.cube()
     local mesh = MutableMesh.new()
 
