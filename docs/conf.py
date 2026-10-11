@@ -6,9 +6,30 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
+import os
+import subprocess
+
 project = 'zyklib'
 copyright = '2026, Zyklop Marco'
 author = 'Zyklop Marco'
+
+# Read the Docs provides the version name (e.g. "latest", "stable" or a tag).
+# Local builds fall back to `git describe` and finally to "dev".
+def _detect_version() -> str:
+    if version_from_env := os.environ.get("READTHEDOCS_VERSION"):
+        return version_from_env
+
+    try:
+        return subprocess.run(
+            ["git", "describe", "--tags", "--always", "--dirty"],
+            capture_output=True, text=True, check=True, timeout=10,
+        ).stdout.strip() or "dev"
+    except (OSError, subprocess.SubprocessError):
+        return "dev"
+
+
+release = _detect_version()
+version = release
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -41,5 +62,5 @@ lua_ls_apidoc_separate_members = True
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_theme = 'alabaster'
+html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
