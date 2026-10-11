@@ -1,6 +1,7 @@
 ---General-purpose helpers for plain Lua values and tables.
 ---
 ---!doctype module
+---@class zyklib.lua_util
 local lua_util = {}
 
 ---Compares two plain lua values or tables for deep equality.

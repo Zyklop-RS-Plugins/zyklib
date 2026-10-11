@@ -1,6 +1,7 @@
 ---Helpers for packing and unpacking fixed-width bit fields in integers.
 ---
 ---!doctype module
+---@class zyklib.bit
 local bits = {}
 
 function bits.get(stride, index, value)

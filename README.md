@@ -16,7 +16,9 @@ my_plugin/
   plugin.json
   zyklib.lua
   zyklib/
-    init.lua
+    array.lua
+    reactive.lua
+    reactive/
     ...
 ```
 
@@ -48,6 +50,7 @@ Available modules:
 | Module                | Description                                                                                                                                   |
 | --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | `lua_util`            | General Lua helpers                                                                                                                           |
+| `array`               | Helpers for Lua arrays (`find`, `includes`, `concat`, `map`, `grouped`)                                                                       |
 | `reactive`            | Events and reactive values (`Event`, `EventHandler`, `Native`, `Observable`, `Derived`)                                                       |
 | `api_util`            | Helpers for the RuneScape plugin API                                                                                                          |
 | `MutableMesh`         | Mesh that can be modified after creation                                                                                                      |
@@ -64,7 +67,7 @@ library to your `.luarc.json`:
 ```json
 {
   "workspace.library": ["path/to/zyklib/src/"],
-  "runtime.path": ["?.lua", "?/init.lua", "path/to/zyklib/src/?.lua", "path/to/zyklib/src/?/init.lua"]
+  "runtime.path": ["?.lua", "path/to/zyklib/src/?.lua"]
 }
 ```
 

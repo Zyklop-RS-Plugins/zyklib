@@ -1,0 +1,3 @@
+[submodule "docs/lua-ls"]
+	path = docs/lua-ls
+	url = https://github.com/Leridon/lua-ls.git

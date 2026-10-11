@@ -1,0 +1,25 @@
+{
+  "$schema": "https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json",
+  "workspace.ignoreDir": ["docs"],
+  "workspace.library": [],
+  "workspace.checkThirdParty": false,
+  "runtime.version": "Lua 5.4",
+  "runtime.builtin": {
+    "basic": "enable",
+    "table": "enable",
+    "string": "enable",
+    "math": "enable",
+    "io": "enable",
+    "os": "disable",
+    "package": "enable",
+    "debug": "disable"
+  },
+  "runtime.meta": "lua54-en-us-utf8", // Have to hardcode this because the default path contains spaces, which messes up sphinx-lua-ls
+  "runtime.path": [
+    "src/?.lua"
+  ],
+  "completion.requireSeparator": "/",
+  "diagnostics.disable": [
+    "different-requires"
+  ]
+}
