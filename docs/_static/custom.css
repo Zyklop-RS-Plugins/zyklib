@@ -1,0 +1,11 @@
+/* Shibuya styles direct anchor children of a signature as the viewcode "[source]" link
+   and forces a line break in front of them. sphinx-lua-ls renders type references as
+   direct children of the signature, so undo that styling. */
+dt.sig > a.internal {
+  font-size: inherit;
+  color: inherit;
+}
+
+dt.sig > a.internal:before {
+  content: none;
+}

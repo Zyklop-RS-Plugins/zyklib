@@ -1,4 +1,4 @@
-# lua_util
+# objects
 
 ```{lua:autoobject} zyklib.objects
 :members:

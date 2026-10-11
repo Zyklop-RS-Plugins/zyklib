@@ -9,7 +9,7 @@ local alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789
 
 --- Encodes a binary string as Base64.
 --- @param data string Any binary data represented as a Lua string.
---- @return string The Base64 encoding of the data.
+--- @return string # The Base64 encoding of the data.
 function base64.encode(data)
   return ((data:gsub(".", function(x)
     local byte = x:byte()
@@ -39,7 +39,7 @@ end
 
 --- Decodes a Base64 string into its binary string representation.
 --- @param data string A Base64 string.
---- @return string The decoded Base64 string as binary data.
+--- @return string # The decoded Base64 string as binary data.
 function base64.decode(data)
   data = data:gsub("[^" .. alphabet .. "=]", "")
 

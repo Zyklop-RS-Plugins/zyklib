@@ -1,3 +1,4 @@
+--- An event handler is a reference to an event callback function that can be paused, resumed, and cancelled.
 --- @class zyklib.reactive.EventHandler<T, RetT>
 --- @field private listener_function fun(payload: T):RetT
 --- @field private cancelled boolean
@@ -19,16 +20,17 @@ function EventHandler.new(handler, event)
   return self
 end
 
---- Notify this event handler with the given payload.
+--- Notify this event handler with the given payload. Should only be called by the associated event.
+--- @package
 --- @param payload T
 --- @return RetT
 function EventHandler:notify(payload)
   return self.listener_function(payload)
 end
 
---- @return boolean isActive Whether the event handler is active
+--- @return boolean # Whether the event handler is active
 function EventHandler:isActive()
-  return not self.cancelled
+  return not self.cancelled and not self.suspended
 end
 
 --- Permanently cancel this event subscription. No further event notifications will be received.
@@ -36,8 +38,9 @@ function EventHandler:cancel()
   if not self.cancelled then
     self:suspend()
     self.cancelled = true
+     -- Clear reference to the event and the listener function to aid garbage collection in niche situations
     self.event = nil
-    self.listener_function = nil -- Clear the reference to the listener function to aid garbage collection
+    self.listener_function = nil
   end
 end
 

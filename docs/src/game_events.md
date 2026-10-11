@@ -1,13 +1,11 @@
-# game_events
+﻿# game_events
 
-## Native
+## Module Contents
 
-```{lua:autoobject} zyklib.game_events.Native
-:members:
+```{toctree}
+:maxdepth: 1
+
+game_events/Native
+game_events/Derived
 ```
 
-## Derived
-
-```{lua:autoobject} zyklib.game_events.Derived
-:members:
-```

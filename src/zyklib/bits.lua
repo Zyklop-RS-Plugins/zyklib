@@ -16,6 +16,7 @@ end
 --- Splits the given integer value into an array of bit sequences.
 --- @param stride integer The bit-width of each segment
 --- @param value integer The integer to split into segments
+--- @param count integer? The number of segments to extract (defaults to 32 // stride)
 --- @return integer[] # The extracted bit-sequence as an unsigned integer
 function bits.getAll(stride, value, count)
   count = count or (32 // stride)

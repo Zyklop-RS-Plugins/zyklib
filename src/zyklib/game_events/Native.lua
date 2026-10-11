@@ -32,7 +32,8 @@ local function forNativeGameEvent(game_event)
   return event
 end
 
-return {
+---@class zyklib.game_events.native
+local native = {
   Logic = forNativeGameEvent(Event.Logic),
   ServerLogic = forNativeGameEvent(Event.ServerLogic),
   Draw = forNativeGameEvent(Event.Draw),
@@ -74,3 +75,5 @@ return {
   RegionCreated = forNativeGameEvent(Event.RegionCreated),
   RegionUpdated = forNativeGameEvent(Event.RegionUpdated),
 }
+
+return native

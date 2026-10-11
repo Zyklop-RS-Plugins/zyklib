@@ -1,9 +1,9 @@
 local EventHandler = require("zyklib/reactive/EventHandler")
 
 --- An event that can have multiple listeners and can be triggered with a payload.
-
+--- !doctype class
 --- @class zyklib.reactive.Event<T, RetT>
---- @field private listeners zyklib.reactive.EventHandler<T, RetT>[]
+--- @field private listeners zyklib.reactive.EventHandler<T, RetT>[] 
 --- @field private status_changed_callback fun(status: boolean)?
 --- @field private hasActiveListeners boolean
 local Event        = {}
@@ -46,6 +46,7 @@ function Event:subscribeSuspended(listener)
 end
 
 --- DO NOT CALL this directly. Use zyklib.reactive.Event:subscribe instead.
+--- @package
 --- @generic T, RetT
 --- @param self zyklib.reactive.Event<T, RetT>
 --- @param handler zyklib.reactive.EventHandler<T, RetT> The event handler to add to this event
@@ -57,6 +58,7 @@ function Event:addHandler(handler)
 end
 
 --- DO NOT CALL this directly. Use zyklib.reactive.EventHandler:suspend or zyklib.reactive.EventHandler:cancel instead.
+--- @package
 --- @generic T, RetT
 --- @param self zyklib.reactive.Event<T, RetT>
 --- @param handler zyklib.reactive.EventHandler<T, RetT> The event handler to remove from this event

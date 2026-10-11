@@ -56,7 +56,10 @@ lua_ls_apidoc_separate_members = True
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
 html_theme = 'shibuya'
+toc_object_entries_show_parents = "hide"
+
 html_theme_options = {
     "globaltoc_expand_depth": 2,
 }
 html_static_path = ['_static']
+html_css_files = ['custom.css']
