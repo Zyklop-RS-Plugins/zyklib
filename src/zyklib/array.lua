@@ -158,12 +158,27 @@ end
 --- @generic T Element type of the array
 --- @generic U Type of the accumulator
 --- @param arr T[] The array to fold
---- @param func fun(accumulator: U, value: T, index: integer): U The function to apply, taking the current accumulator, the current element, and its index
+--- @param func fun(value: T, accumulator: U, index: integer): U The function to apply, taking the current accumulator, the current element, and its index
 --- @param initial U The initial value of the accumulator
 --- @return U # The final accumulated value
 function array.foldRight(arr, func, initial)
   local acc = initial
   for i = #arr, 1, -1 do
+    acc = func(arr[i], acc, i)
+  end
+  return acc
+end
+
+--- Folds (reduces) an array from left to right using a binary function and an initial accumulator value.
+--- @generic T Element type of the array
+--- @generic U Type of the accumulator
+--- @param arr T[] The array to fold
+--- @param func fun(accumulator: U, value: T, index: integer): U The function to apply, taking the current accumulator, the current element, and its index
+--- @param initial U The initial value of the accumulator
+--- @return U # The final accumulated value
+function array.foldLeft(arr, func, initial)
+  local acc = initial
+  for i = 1, #arr do
     acc = func(acc, arr[i], i)
   end
   return acc
