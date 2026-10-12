@@ -30,6 +30,17 @@ function array.includes(arr, element)
   return array.exists(arr, function(value) return value == element end)
 end
 
+--- Finds the index of the first occurence of an element in an array.
+--- @generic T Element type of the array
+--- @param arr T[] The array to search
+--- @param element T The element to find
+--- @return integer # Index of the element, or -1 if not found
+function array.indexOf(arr, element)
+  local _, i = array.find(arr, function(value) return value == element end)
+
+  return i
+end
+
 --- Applies a function returning an array to each element and concatenates all resulting arrays into a single array.
 --- @generic T Element type of the array
 --- @generic U Element type of the arrays returned by the function
@@ -102,7 +113,7 @@ end
 function array.map(arr, func)
   local result = {}
   for i, v in ipairs(arr) do
-    table.insert(result, func(v, i))
+    result[i] = func(v, i)
   end
   return result
 end
@@ -126,6 +137,36 @@ function array.grouped(arr, size)
   end
 
   return chunks
+end
+
+--- Counts the number of elements in an array that satisfy a predicate.
+--- @generic T Element type of the array
+--- @param arr T[] The array to count elements from
+--- @param predicate fun(value: T, index: integer): boolean The condition an element must satisfy to be counted
+--- @return integer # The number of elements satisfying the predicate
+function array.count(arr, predicate)
+  local count = 0
+  for i = 1, #arr do
+    if predicate(arr[i], i) then
+      count = count + 1
+    end
+  end
+  return count
+end
+
+--- Folds (reduces) an array from right to left using a binary function and an initial accumulator value.
+--- @generic T Element type of the array
+--- @generic U Type of the accumulator
+--- @param arr T[] The array to fold
+--- @param func fun(accumulator: U, value: T, index: integer): U The function to apply, taking the current accumulator, the current element, and its index
+--- @param initial U The initial value of the accumulator
+--- @return U # The final accumulated value
+function array.foldRight(arr, func, initial)
+  local acc = initial
+  for i = #arr, 1, -1 do
+    acc = func(acc, arr[i], i)
+  end
+  return acc
 end
 
 return array
