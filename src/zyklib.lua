@@ -1,5 +1,5 @@
 return {
-  lua_util = require "zyklib/lua_util",
+  objects = require "zyklib/objects",
   array = require "zyklib/array",
   reactive = require "zyklib/reactive",
   game_events = require "zyklib/game_events",
