@@ -21,6 +21,7 @@ This is the table of contents for the Zyklib documentation.
    src/objects
    src/base64
    src/reactive
+   src/disposable
    src/bits
 
 .. toctree::

@@ -5,7 +5,7 @@ local HighlightParams = require "zyklib/highlights/HighlightParams"
 --- @field lineWidth number
 --- @field isBillboard boolean
 
---- @class zyklib.Highlight
+--- @class zyklib.Highlight : zyklib.disposable.IDisposable
 --- @field parent zyklib.HighlightGroup?
 --- @field self_params zyklib.HighlightParams
 --- @field actual_params zyklib.HighlightParams
@@ -59,6 +59,12 @@ function Highlight:setColour(colour)
   self.self_params.colour = colour
   self:propagate_param_change()
   return self
+end
+
+--- Disposing of a highlight deactivates it so that it no longer shows.
+--- @return nil
+function Highlight:dispose()
+  self:deactivate()
 end
 
 return Highlight
