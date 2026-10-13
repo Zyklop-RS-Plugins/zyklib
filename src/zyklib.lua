@@ -10,5 +10,6 @@ return {
   highlights = require "zyklib/highlights",
   bit = require "zyklib/bits",
   lifecycle = require "zyklib/lifecycle",
-  game = require "zyklib/game"
+  game = require "zyklib/game",
+  json = require "zyklib/json",
 }
