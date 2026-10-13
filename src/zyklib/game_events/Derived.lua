@@ -52,7 +52,7 @@ end
 function derived.interface(interface)
   -- TODO: Maybe it makes sense to memoize these internally.
 
-  return Native.ServerLogic
+  return native.ServerLogic
       :map(function() return ui.Interfaces:GetInterface(interface) end) -- Query value of the variable
       :toObservable(ui.Interfaces:GetInterface(interface) --[[@as ui.Interface]])
 end
@@ -61,7 +61,7 @@ end
 --- @param component ComponentId The id of the interface in question
 --- @return zyklib.reactive.Observable<ui.Component?>
 function derived.component(component)
-  return Native.ServerLogic
+  return native.ServerLogic
       :map(function() return ui.Interfaces:GetComponent(component) end) -- Query value of the variable
       :toObservable(ui.Interfaces:GetInterface(component) --[[@as ui.Component]])
 end

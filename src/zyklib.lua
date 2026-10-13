@@ -8,7 +8,7 @@ return {
   UniqueNameGenerator = require "zyklib/UniqueNameGenerator",
   base64 = require "zyklib/base64",
   highlights = require "zyklib/highlights",
-  bit = require "zyklib/bits",
+  bits = require "zyklib/bits",
   lifecycle = require "zyklib/lifecycle",
   game = require "zyklib/game",
   json = require "zyklib/json",

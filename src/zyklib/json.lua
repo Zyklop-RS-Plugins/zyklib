@@ -23,6 +23,7 @@
 -- SOFTWARE.
 --
 
+--- @class zyklib.json
 local json = {}
 
 -------------------------------------------------------------------------------
@@ -133,8 +134,8 @@ end
 
 --- Transform a lua value into a JSON-encoded string.
 ---
---- @param val table | boolean | string | number The Lua value to encode as JSON. May not be cyclic!
---- @return string The encoded JSON string.
+--- @param val table | boolean | string | number The Lua value to encode as JSON. Must not contain circular references, sparse arrays, or mixed key types.
+--- @return string # The encoded JSON string.
 function json.encode(val)
   return encode(val)
 end
@@ -375,7 +376,7 @@ end
 
 --- Decode a JSON-encoded string into a Lua value.
 ---@param str string The JSON-encoded string to decode.
----@return table | boolean | string | number The decoded Lua value.
+---@return table | boolean | string | number # The decoded Lua value.
 function json.decode(str)
   if type(str) ~= "string" then
     error("expected argument of type string, got " .. type(str))

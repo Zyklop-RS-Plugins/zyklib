@@ -23,6 +23,7 @@ This is the table of contents for the Zyklib documentation.
    src/reactive
    src/disposable
    src/bits
+   src/json
 
 .. toctree::
    :maxdepth: 2
