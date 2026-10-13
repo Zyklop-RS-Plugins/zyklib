@@ -1,5 +1,5 @@
 local Event = require("zyklib/reactive/Event")
-local lua_util = require("zyklib/lua_util")
+local objects = require("zyklib/objects")
 
 --- An observable represents a value that can be observed for changes.
 --- Subscribers are notified whenever the value changes.
@@ -25,7 +25,7 @@ function Observable.new(initial_value, equals, status_changed_callback)
   setmetatable(self, Observable)
 
   self.value = initial_value
-  self.equals = equals or lua_util.deep_equals
+  self.equals = equals or objects.deepEquals
 
   return self
 end
