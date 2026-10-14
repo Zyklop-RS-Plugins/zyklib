@@ -12,4 +12,5 @@ return {
   lifecycle = require "zyklib/lifecycle",
   game = require "zyklib/game",
   json = require "zyklib/json",
+  async = require "zyklib/async"
 }

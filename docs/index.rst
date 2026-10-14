@@ -22,6 +22,7 @@ This is the table of contents for the Zyklib documentation.
    src/base64
    src/reactive
    src/disposable
+   src/async
    src/bits
    src/json
 
