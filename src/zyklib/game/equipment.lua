@@ -57,11 +57,9 @@ function equipment.observableSlot(slot)
 
   return zyklib.game_events.native.InventoryUpdated
       :filter(function(payload)
-        log("inv updated ", zyklib.api_util.to_plain_table(payload))
         return payload.inv.id == config.Inv.WORN.id and zyklib.array.includes(payload.slotsUpdated, slot_id)
       end)
       :map(function()
-        log("upd")
         return equipment.getSlot(slot_id)
       end)
       :toObservable(equipment.getSlot(slot_id) --[[@as InvSlot]])

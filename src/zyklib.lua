@@ -1,4 +1,6 @@
-return {
+--- !doctype module
+--- @class zyklib
+local zyklib = {
   objects = require "zyklib/objects",
   array = require "zyklib/array",
   reactive = require "zyklib/reactive",
@@ -12,5 +14,7 @@ return {
   lifecycle = require "zyklib/lifecycle",
   game = require "zyklib/game",
   json = require "zyklib/json",
-  async = require "zyklib/async"
+  async = require "zyklib/async",
+  http = require "zyklib/http"
 }
+return zyklib

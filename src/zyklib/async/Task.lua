@@ -130,4 +130,26 @@ function task.maybeYield()
   end
 end
 
+function task.async(f)
+  local zyklib = require("zyklib")
+
+  local promise = zyklib.async.Promise.new()
+
+  local cor = coroutine.create(function()
+    local success, result = pcall(f)
+    if success then
+      promise:resolve(result)
+    else
+      promise:reject(result)
+    end
+  end)
+
+  local ok, err = coroutine.resume(cor)
+  if not ok then
+    promise:reject(err)
+  end
+
+  return promise
+end
+
 return task

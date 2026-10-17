@@ -81,7 +81,9 @@ function promise:onCompletion(callback)
   return self
 end
 
----@generic U
+---Maps this promise to another promise using the provided function that maps the resolved value to a new value
+---@generic T, U
+---@param self zyklib.async.Promise<T>
 ---@param f fun(value: T): U
 ---@return zyklib.async.Promise<U>
 function promise:map(f)
@@ -105,7 +107,9 @@ function promise:map(f)
   return result
 end
 
----@generic U
+---Maps this promise to another promise using the provided function that maps the resolved value to a new promise
+---@generic T, U
+---@param self zyklib.async.Promise<T>
 ---@param f fun(value: T): zyklib.async.Promise<U>
 ---@return zyklib.async.Promise<U>
 function promise:flatMap(f)
@@ -134,6 +138,48 @@ function promise:flatMap(f)
   end)
 
   return result
+end
+
+---@return boolean # Whether this promise is already settled
+function promise:isSettled()
+  return self.state ~= "pending"
+end
+
+function promise:get()
+  if self.state == "fulfilled" then
+    return self.value
+  elseif self.state == "rejected" then
+    error(self.reason)
+  else
+    error("Promise is still pending")
+  end
+end
+
+---@async
+---@generic T
+---@param self zyklib.async.Promise<T>
+---@return T
+function promise:await()
+  if not coroutine.isyieldable() then
+    error("zyklib.async.Promise:await must be called within a yieldable coroutine")
+  end
+
+  local co = coroutine.running()
+
+  if self:isSettled() then
+    -- If the promise is already settled, return the value or raise the error immediately
+    return self.state == "fulfilled" and self.value or error(self.reason)
+  else
+    -- If the promise is not yet settled, yield the coroutine and resume it once the promise is completed
+    self:onCompletion(function(ok, value)
+      coroutine.resume(co, ok, value)
+    end)
+    local ok, value = coroutine.yield()
+    if not ok then
+      error(value)
+    end
+    return value
+  end
 end
 
 return promise
