@@ -6,9 +6,9 @@
 ---@field package state zyklib.async.TaskState
 ---@field package result T
 ---@field package error any
----@field package tick_handler zyklib.reactive.EventHandler
-local task = {}
-task.__index = task
+---@field package timeshare {ticks: integer, milliseconds: integer}
+local Task = {}
+Task.__index = Task
 
 ---@type table<thread, zyklib.async.Task>
 local tasks = setmetatable({}, { __mode = "k" })
@@ -16,12 +16,13 @@ local tasks = setmetatable({}, { __mode = "k" })
 ---@generic T Result type of the created task
 ---@param f fun():T
 ---@return zyklib.async.Task<T> # A new task that is not started yet.
-function task.new(f)
+function Task.new(f)
   local zyklib = require("zyklib")
 
-  local self = setmetatable({}, task)
+  local self = setmetatable({}, Task)
   self.state = "pending"
   self.result_promise = zyklib.async.Promise.new()
+  self.timeshare = { ticks = 1, milliseconds = 5 }
 
   self.coroutine = coroutine.create(function()
     self.state = "running"
@@ -39,34 +40,6 @@ function task.new(f)
 
   tasks[self.coroutine] = self
 
-  self.tick_handler = zyklib.game_events.native.Logic:subscribeSuspended(function()
-    if self.state == "running" then
-      coroutine.resume(self.coroutine)
-
-      if self.state == "cancelrequested" then
-        -- Change the state from cancel requested to cancelled, so that it will now be properly cleaned up
-        self.state = "cancelled"
-      end
-    end
-
-    -- Clean up the task if it has finished, been cancelled, or encountered an error.
-    if self.state == "finished"
-        or self.state == "cancelled"
-        or self.state == "error" then
-      coroutine.close(self.coroutine)
-      tasks[self.coroutine] = nil
-      self.tick_handler:cancel()
-    end
-
-    -- Resolve the promise if the task has finished in this tick
-    if self.state == "finished" then
-      self.result_promise:resolve(self.result)
-    elseif self.state == "error" then
-      self.result_promise:reject(self.error)
-    end
-  end)
-
-
   return self
 end
 
@@ -74,25 +47,25 @@ end
 ---@generic T
 ---@param self zyklib.async.Task<T>
 ---@return zyklib.async.Promise<T>
-function task:asPromise()
+function Task:promise()
   return self.result_promise
 end
 
 ---Start this task. It won't execute right away, but it will be scheduled to run in the next game logic tick.
 ---@return zyklib.async.Task
-function task:start()
+function Task:start()
   if self.state ~= "pending" then
     error("Cannot start a task that is not pending. Current state: " .. tostring(self.state))
   end
 
   self.state = "running"
-  self.tick_handler:setActive(true)
+  self:scheduleResume()
 
   return self
 end
 
 --- Cancel this task. If the task is currently running, it will be marked as cancel requested and yield. If it's not running, it will be immediately cancelled.
-function task:cancel()
+function Task:cancel()
   if self.state == "finished"
       or self.state == "cancelled"
       or self.state == "cancelrequested"
@@ -108,48 +81,60 @@ function task:cancel()
     self.state = "cancelled"
 
     tasks[self.coroutine] = nil
-    self.tick_handler:cancel()
   end
 end
 
----Gets the state of this task.
----@return zyklib.async.TaskState
-function task:getState()
-  return self.state
-end
-
-function task:dispose()
+function Task:dispose()
   self:cancel()
 end
 
+---Retrieves the currently running task, if any.
+---@return zyklib.async.Task?
+function Task.getCurrent()
+  return tasks[coroutine.running()]
+end
+
+local native_events = require("zyklib/game_events/native")
+
+function Task:scheduleResume()
+  -- TODO: This type of listening is probably not very efficient, but it is a convenient and correct low effort implementation.
+  native_events.Logic
+      :filter(function(payload) return payload.logicTick % self.timeshare.ticks == 0 end)
+      :once(function()
+        coroutine.resume(self.coroutine)
+
+        if self.state == "cancelrequested" then
+          -- Change the state from cancel requested to cancelled, so that it will now be properly cleaned up
+          self.state = "cancelled"
+        end
+
+        -- Clean up the task if it has finished, been cancelled, or encountered an error.
+        if self.state == "finished"
+            or self.state == "cancelled"
+            or self.state == "error" then
+          coroutine.close(self.coroutine)
+          tasks[self.coroutine] = nil
+        end
+
+        -- Resolve the promise if the task has finished in this tick
+        if self.state == "finished" then
+          self.result_promise:resolve(self.result)
+        elseif self.state == "error" then
+          self.result_promise:reject(self.error)
+        end
+      end)
+end
+
 ---Yields the currently active task if there is one. This is the only way to cooperatively yield a task.
-function task.maybeYield()
-  if tasks[coroutine.running()] then
+function Task.maybeYield()
+  local running_task = Task.getCurrent()
+
+  if running_task and running_task.state == "running" then
+    running_task:scheduleResume() -- Schedule the task to resume on the next appropriate tick
+
     -- TODO: Once we have better timing, this needs to respect the interval setup. Currently, it always yields due to a lack of better measurement.
     coroutine.yield()
   end
 end
 
-function task.async(f)
-  local zyklib = require("zyklib")
-
-  local promise = zyklib.async.Promise.new()
-
-  local cor = coroutine.create(function()
-    local success, result = pcall(f)
-    if success then
-      promise:resolve(result)
-    else
-      promise:reject(result)
-    end
-  end)
-
-  local ok, err = coroutine.resume(cor)
-  if not ok then
-    promise:reject(err)
-  end
-
-  return promise
-end
-
-return task
+return Task

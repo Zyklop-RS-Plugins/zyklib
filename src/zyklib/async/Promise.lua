@@ -18,6 +18,15 @@ function promise.new()
   }, promise)
 end
 
+---@generic T
+---@param value T
+---@return zyklib.async.Promise<T>
+function promise.resolved(value)
+  local p = promise.new()
+  p:resolve(value)
+  return p
+end
+
 ---Settles this promise
 ---@generic T
 ---@param self zyklib.async.Promise<T>
