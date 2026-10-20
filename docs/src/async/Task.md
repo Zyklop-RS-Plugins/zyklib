@@ -21,7 +21,7 @@ local task = zyklib.async.Task.new(function()
   return "done"
 end)
 
-task.finished_event:subscribe(function(result)
+task.promise():onSuccess(function(result)
   print(result)
 end)
 
