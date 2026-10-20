@@ -204,8 +204,6 @@ function base64.decodeLargeAsync(data)
         false
       )
 
-      log(i.."/"..n)
-
       task.maybeYield()
     end
 

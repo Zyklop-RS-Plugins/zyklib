@@ -37,6 +37,7 @@ local function update_instances(instance)
       local shape_instance = api_util.unique_shape_instance(settings.shapeData)
 
       shape_instance:SetShapeData(settings.shapeData)
+      HighlightParams.apply_to_shape_instance(instance.actual_params, shape_instance)
 
       if settings.translation ~= nil then
         shape_instance.translation = settings.translation

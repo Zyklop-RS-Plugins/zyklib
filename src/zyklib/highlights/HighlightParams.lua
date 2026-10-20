@@ -1,12 +1,13 @@
 local api_util = require "zyklib/api_util"
 
---- The set of parameters that control how and where the geometry of a highlight is drawn. 
---- @class zyklib.HighlightParams 
+--- The set of parameters that control how and where the geometry of a highlight is drawn.
+--- @class zyklib.HighlightParams
 --- @field colour ColourRGBA? Colour modifier of the highlight geometry that applies multiplicatively with the shape's original colour. Default is 0xFFFFFFFF (no change).
 --- @field translation Vector3? A translation offset that is added to the position of the highlight geometry. Default is Vector3.new(0, 0, 0) (no change).
 --- @field ignoreDepth boolean? If true, the highlight geometry will be drawn on top of all other geometry, ignoring depth testing. If false, the highlight geometry will be drawn with normal depth testing. Default is nil (no change).
 --- @field visible boolean? If true, the highlight geometry will be visible. If false, it will be hidden. Default is nil (no change).
 
+---@class zyklib.HighlightParams.module
 local HighlightParams = {}
 
 --- @param parentColor integer

@@ -24,7 +24,7 @@ end
 --- @return nil
 function Highlight:propagate_param_change()
   if self.parent ~= nil then
-    self.actual_params = HighlightParams.blend(self.parent.actual_params, self.self_params)
+    self.actual_params = HighlightParams.merge(self.parent.actual_params, self.self_params)
   else
     self.actual_params = self.self_params
   end
