@@ -189,7 +189,7 @@ local CHUNK_SIZE = 24 * 1024 -- Must be divisible by 4
 ---@param data string
 ---@return zyklib.async.Task<string>
 function base64.decodeLargeAsync(data)
-  local task = require("zyklib/async/task")
+  local task = require("zyklib/async/Task")
 
   local t = task.new(function()
     local chunks = {}
