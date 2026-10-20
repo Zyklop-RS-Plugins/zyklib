@@ -6,7 +6,7 @@
 ---@field package state zyklib.async.TaskState
 ---@field package result T
 ---@field package error any
----@field package timeshare {ticks: integer, milliseconds: integer}
+---@field package timeshare { milliseconds_per_tick: integer}
 local Task = {}
 Task.__index = Task
 
@@ -22,7 +22,7 @@ function Task.new(f)
   local self = setmetatable({}, Task)
   self.state = "pending"
   self.result_promise = zyklib.async.Promise.new()
-  self.timeshare = { ticks = 1, milliseconds = 5 }
+  self.timeshare = { milliseconds_per_tick = 5 }
 
   self.coroutine = coroutine.create(function()
     self.state = "running"
@@ -96,14 +96,33 @@ function Task.getCurrent()
   return tasks[coroutine.running()]
 end
 
+---Retrieves the task associated with the given coroutine, if any.
+---@param co thread
+---@return zyklib.async.Task?
+function Task.getForCoroutine(co)
+  return tasks[co]
+end
+
 local native_events = require("zyklib/game_events/native")
 
-function Task:scheduleResume()
+---Schedules this task to be resumed on the next appropriate tick. This is the only way a task coroutine is resumed.
+---@param ... any # Values passed to the coroutine on resume (the results of the yield it is suspended in)
+function Task:scheduleResume(...)
+  if self.state == "finished"
+      or self.state == "cancelled"
+      or self.state == "cancelrequested"
+      or self.state == "error" then
+    return
+  end
+
+  local args = table.pack(...)
+
   -- TODO: This type of listening is probably not very efficient, but it is a convenient and correct low effort implementation.
   native_events.Logic
-      :filter(function(payload) return payload.logicTick % self.timeshare.ticks == 0 end)
       :once(function()
-        coroutine.resume(self.coroutine)
+        if self.state == "running" then
+          coroutine.resume(self.coroutine, table.unpack(args, 1, args.n))
+        end
 
         if self.state == "cancelrequested" then
           -- Change the state from cancel requested to cancelled, so that it will now be properly cleaned up

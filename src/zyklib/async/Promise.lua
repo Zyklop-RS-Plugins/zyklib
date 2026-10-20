@@ -173,15 +173,22 @@ function promise:await()
     error("zyklib.async.Promise:await must be called within a yieldable coroutine")
   end
 
-  local co = coroutine.running()
-
   if self:isSettled() then
     -- If the promise is already settled, return the value or raise the error immediately
     return self.state == "fulfilled" and self.value or error(self.reason)
   else
+    local co = coroutine.running()
+
     -- If the promise is not yet settled, yield the coroutine and resume it once the promise is completed
     self:onCompletion(function(ok, value)
-      coroutine.resume(co, ok, value)
+      local task = require("zyklib/async/Task").getForCoroutine(co)
+
+      if task ~= nil then
+        -- Task coroutines are only resumed by the task scheduler so that its cleanup always runs.
+        task:scheduleResume(ok, value)
+      else
+        coroutine.resume(co, ok, value)
+      end
     end)
     local ok, value = coroutine.yield()
     if not ok then
