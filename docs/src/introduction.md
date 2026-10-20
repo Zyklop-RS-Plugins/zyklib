@@ -2,7 +2,7 @@
 
 Zyklib is a community maintained standard library for the RuneScape plugin API.
 It is plain Lua source code that is shipped together with your plugin. It
-helpers that many plugins would otherwise end up writing themselves.
+provides helpers that many plugins would otherwise end up writing themselves.
 
 ```{warning}
 Zyklib does not have a stable API yet. Modules, functions and types may

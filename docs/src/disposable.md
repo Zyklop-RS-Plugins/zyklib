@@ -41,7 +41,11 @@ end))
 
 ## API reference
 
-```{lua:autoobject} zyklib.disposable
+```{lua:autoobject} zyklib.disposable.IDisposable
+:members:
+```
+
+```{lua:autoobject} zyklib.disposable.DisposableGroup
 :members:
 ```
 

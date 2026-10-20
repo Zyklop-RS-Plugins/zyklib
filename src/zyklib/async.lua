@@ -4,6 +4,9 @@ local async = {
   Promise = require("zyklib/async/Promise"),
 }
 
+---Starts asynchronous execution of a function. The function is executed in a yieldable coroutine, so that promises can be awaited.
+---@param f any
+---@return unknown|zyklib.async.Promise<T>
 function async.async(f)
   local zyklib = require("zyklib")
 
@@ -39,6 +42,15 @@ function async.interval(f, interval)
   end)
   t.timeshare = { ticks = interval }
   return t:start()
+end
+
+function async.await(value)
+  if type(value) == "table" and getmetatable(value) == async.Promise then
+    ---@cast value zyklib.async.Promise
+    return value:await()
+  elseif type(value) == "table" and getmetatable(value) == async.Task then
+    return value
+  end
 end
 
 return async

@@ -9,4 +9,5 @@ Zyklib is an attempt to provide a centralized repository for these utilities to 
 
 ## Documentation
 
-Documentation of Zyklib is hosted [readthedocs.org](https://zyklib.readthedocs.io/en/latest/).
+Documentation of Zyklib for plugin developers is hosted at [readthedocs.org](https://zyklib.readthedocs.io/latest/).
+

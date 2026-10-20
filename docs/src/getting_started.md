@@ -25,7 +25,7 @@ The exact placement of both zyklib.lua and the zyklib folder is important.
 The Lua runtime embedded in the RuneScape client does support neither relative path requires nor `init.lua` requires for folders, so any other placement will break internal requires in zyklib.
 ```
 
-See (Editor support)[#Editor support] to learn how to teach Zyklib typings to LuaLS.
+See [Editor support](editor-support) to learn how to teach Zyklib typings to LuaLS.
 
 ## Usage
 
@@ -44,9 +44,9 @@ You can also require a single module directly:
 local base64 = require "zyklib/base64"
 ```
 
-## Plugin shutdown
+## Runtime setup
 
-Zyklib contains a utility to turn the global `PluginShutdown` lifecycle function in an observable event. To set this up, manually call `zyklib.lifecycle.setupGlobals` once at startup. You can then subscribe to the `shutdown_event` anywhere in your plugin to register cleanup code to be executed when the plugin shuts down.
+Zyklib contains a utility to turn the global `PluginShutdown` lifecycle function in an observable event. To set this up, manually call `zyklib.lifecycle.setupGlobals` once at startup of your plugin. You can then subscribe to the `shutdown_event` anywhere in your plugin to register cleanup code to be executed when the plugin shuts down.
 
 ```lua
 local lifecycle = require "zyklib/lifecycle"
@@ -61,6 +61,7 @@ end)
 If your plugin already defines its own `PluginShutdown` function, call
 `lifecycle.notifyShutdown()` from it instead.
 
+(editor-support)=
 ## Editor support
 
 To get completion and type checking with [LuaLS](https://luals.github.io/),

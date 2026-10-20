@@ -52,7 +52,9 @@ function Task:promise()
 end
 
 ---Start this task. It won't execute right away, but it will be scheduled to run in the next game logic tick.
----@return zyklib.async.Task
+---@generic T: zyklib.async.Task
+---@param self T
+---@return T
 function Task:start()
   if self.state ~= "pending" then
     error("Cannot start a task that is not pending. Current state: " .. tostring(self.state))
@@ -129,7 +131,7 @@ end
 function Task.maybeYield()
   local running_task = Task.getCurrent()
 
-  if running_task and running_task.state == "running" then
+  if running_task ~= nil and running_task.state == "running" then
     running_task:scheduleResume() -- Schedule the task to resume on the next appropriate tick
 
     -- TODO: Once we have better timing, this needs to respect the interval setup. Currently, it always yields due to a lack of better measurement.

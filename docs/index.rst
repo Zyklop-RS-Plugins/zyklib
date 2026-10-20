@@ -1,14 +1,16 @@
 .. You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Zyklib
-==================================
+Zyklib Documentation
+====================
 
-This is the table of contents for the Zyklib documentation.
+This page is the documentation home page and navigation hub. Use the contents
+below to find a topic. For an overview of what Zyklib is and why it exists, see
+the dedicated :doc:`Introduction <src/introduction>` page.
 
 .. toctree::
    :maxdepth: 2
-   :caption: Introduction
+   :caption: Start here
 
    src/introduction
    src/getting_started
@@ -43,4 +45,3 @@ Indices and tables
 ==================
 
 * :ref:`genindex`
-* :ref:`search`
