@@ -63,7 +63,7 @@ end
 function derived.component(component)
   return native.ServerLogic
       :map(function() return ui.Interfaces:GetComponent(component) end) -- Query value of the variable
-      :toObservable(ui.Interfaces:GetInterface(component) --[[@as ui.Component]])
+      :toObservable(ui.Interfaces:GetComponent(component) --[[@as ui.Component]])
 end
 
 return derived
