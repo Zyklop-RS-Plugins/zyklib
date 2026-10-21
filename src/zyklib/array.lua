@@ -184,4 +184,14 @@ function array.foldLeft(arr, func, initial)
   return acc
 end
 
+function array.mkString(separator, prefix, postfix)
+  separator = separator or ", "
+  prefix = prefix or "["
+  postfix = postfix or "]"
+
+  return function(arr)
+    return prefix .. table.concat(arr, separator) .. postfix
+  end
+end
+
 return array

@@ -15,6 +15,7 @@ local zyklib = {
   game = require "zyklib/game",
   json = require "zyklib/json",
   async = require "zyklib/async",
-  http = require "zyklib/http"
+  http = require "zyklib/http",
+  disposable = require "zyklib/disposable"
 }
 return zyklib

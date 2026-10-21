@@ -26,11 +26,14 @@ function disposable.DisposableGroup:dispose()
   end
 end
 
---- Adds a new disposable to this disposable group.
----@param element zyklib.disposable.IDisposable
-function disposable.DisposableGroup:add(element)
+--- Adds disposables to this disposable group.
+---@param ... zyklib.disposable.IDisposable
+function disposable.DisposableGroup:add(...)
   self.disposables = self.disposables or {}
-  table.insert(self.disposables, element)
+  for i = 1, select("#", ...) do
+    local element = select(i, ...)
+    table.insert(self.disposables, element)
+  end
 end
 
 --- Wraps any parameterless function as a disposable. Use this to wrap

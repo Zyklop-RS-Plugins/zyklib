@@ -16,8 +16,8 @@ setmetatable(Observable, { __index = Event })
 --- Creates a new observable holding `initial_value`.
 --- @generic T
 --- @param initial_value T The initial value of the observable
---- @param equals? fun(a: T, b: T): boolean Optional equality function to compare old and new values
---- @param status_changed_callback fun(status: boolean) # Callback invoked when the status of the observable changes
+--- @param equals (fun(a: T, b: T): boolean)? Optional equality function to compare old and new values
+--- @param status_changed_callback (fun(status: boolean))? # Callback invoked when the status of the observable changes
 --- @return zyklib.reactive.Observable<T>
 function Observable.new(initial_value, equals, status_changed_callback)
   --- @type zyklib.reactive.Observable<T>
