@@ -118,6 +118,26 @@ function array.map(arr, func)
   return result
 end
 
+--- Combines two arrays element by element using a function. The result has the length of the shorter array.
+--- @generic A Element type of the first array
+--- @generic B Element type of the second array
+--- @generic U Result type of the combining function
+--- @param a A[] The first array
+--- @param b B[] The second array
+--- @param func (fun(a: A, b: B, index: integer): U)? The function combining the elements at the same index. When omitted, a default function returning a pair of elements is used.
+--- @return U[] # A new array containing the result of `func` for each pair of elements
+function array.zip(a, b, func)
+  func = func or function(x, y) return { x, y } end
+
+  local result = {}
+
+  for i = 1, math.min(#a, #b) do
+    result[i] = func(a[i], b[i], i)
+  end
+
+  return result
+end
+
 --- Splits a array into consecutive groups of a given size. The last group may be smaller if the array length is not a multiple of `size`.
 --- @generic T Element type of the array
 --- @param arr T[] The array to split
