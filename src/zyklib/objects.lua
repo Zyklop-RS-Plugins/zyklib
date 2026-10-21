@@ -32,4 +32,54 @@ function objects.deepEquals(a, b)
   return true
 end
 
+--- Creates a shallow copy of a table. Keys and values are copied as-is, so nested tables are shared with the original.
+--- The metatable is preserved. Non-table values are returned unchanged.
+--- @generic T
+--- @param value T
+--- @return T
+function objects.clone(value)
+  if type(value) ~= "table" then
+    return value
+  end
+
+  local result = {}
+
+  for k, v in pairs(value) do
+    result[k] = v
+  end
+
+  return setmetatable(result, getmetatable(value))
+end
+
+--- Creates a deep copy of a table, recursively copying all nested tables (both keys and values).
+--- Shared and cyclic references within the original are preserved in the copy. Metatables are preserved but not copied.
+--- Non-table values are returned unchanged.
+--- @generic T
+--- @param value T
+--- @return T
+function objects.deepClone(value)
+  local copies = {}
+
+  local function copy(v)
+    if type(v) ~= "table" then
+      return v
+    end
+
+    if copies[v] then
+      return copies[v]
+    end
+
+    local result = {}
+    copies[v] = result
+
+    for key, inner in pairs(v) do
+      result[copy(key)] = copy(inner)
+    end
+
+    return setmetatable(result, getmetatable(v))
+  end
+
+  return copy(value)
+end
+
 return objects
