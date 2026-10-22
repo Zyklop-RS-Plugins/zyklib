@@ -231,4 +231,42 @@ function array.mkString(separator, prefix, postfix)
   end
 end
 
+---@generic T
+---@param arr T[]
+---@param scorer fun(value: T): number
+---@return T
+function array.minBy(arr, scorer)
+  local minValue = nil
+  local minScore = math.huge
+
+  for i = 1, #arr do
+    local score = scorer(arr[i])
+    if minScore == nil or score < minScore then
+      minScore = score
+      minValue = arr[i]
+    end
+  end
+
+  return minValue
+end
+
+---@generic T
+---@param arr T[]
+---@param scorer fun(value: T): number
+---@return T
+function array.maxBy(arr, scorer)
+  local maxValue = nil
+  local maxScore = -math.huge
+
+  for i = 1, #arr do
+    local score = scorer(arr[i])
+    if maxScore == nil or score > maxScore then
+      maxScore = score
+      maxValue = arr[i]
+    end
+  end
+
+  return maxValue
+end
+
 return array
