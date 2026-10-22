@@ -21,6 +21,23 @@ function array.find(arr, predicate)
   return nil, -1
 end
 
+--- Finds the last element in a array according to a predicate
+--- @generic T Element type of the array
+--- @param arr T[]
+--- @param predicate fun(value: T, index: integer): boolean
+--- @return T? # The last matching element, or `nil` if there is none
+--- @return integer # Index of the last matching element, or -1 if there is none
+function array.findLast(arr, predicate)
+  for i = #arr, 1, -1 do
+    local value = arr[i]
+    if predicate(value, i) then
+      return value, i
+    end
+  end
+
+  return nil, -1
+end
+
 --- Checks whether a given element exists in a array
 --- @generic T Element type of the array
 --- @param arr T[]
