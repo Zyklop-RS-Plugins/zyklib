@@ -60,7 +60,7 @@ end
 --- @param listener fun(payload: T) Called with the new value on every change while the handler is active
 --- @return zyklib.reactive.EventHandler<{ old: T, new: T }, nil> # The suspended handler
 function Observable:subscribeSuspended(listener)
-  local handler = self.changed_event:subscribe(function(change)
+  local handler = self.changed_event:subscribeSuspended(function(change)
     listener(change.new)
   end)
 

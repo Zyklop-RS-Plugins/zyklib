@@ -61,6 +61,8 @@ function promise:reject(reason)
   self:_settle("rejected", reason)
 end
 
+---@generic T
+---@param self zyklib.async.Promise<T>
 ---@param callback fun(value: T)
 ---@return self
 function promise:onSuccess(callback)
