@@ -241,7 +241,7 @@ function array.minBy(arr, scorer)
 
   for i = 1, #arr do
     local score = scorer(arr[i])
-    if minScore == nil or score < minScore then
+    if score < minScore then
       minScore = score
       minValue = arr[i]
     end
@@ -260,13 +260,24 @@ function array.maxBy(arr, scorer)
 
   for i = 1, #arr do
     local score = scorer(arr[i])
-    if maxScore == nil or score > maxScore then
+    if score > maxScore then
       maxScore = score
       maxValue = arr[i]
     end
   end
 
   return maxValue
+end
+
+--- Sums the array with a function applied to each element
+--- @generic T
+--- @param arr T[]
+--- @param to_number fun(value: T, index: integer): number
+--- @return number
+function array.sumBy(arr, to_number)
+  return array.foldLeft(arr, function(accumulator, value, index)
+    return accumulator + to_number(value, index)
+  end, 0)
 end
 
 return array
