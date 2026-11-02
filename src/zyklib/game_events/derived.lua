@@ -20,16 +20,20 @@ function derived.forClientVariables(value_function, tick_rate)
 end
 
 --- Construct an observable for any VarClient or VarPlayer variable.
+--- @generic T
 --- @param var VarPlayer The player variable to be observed. Must be a variable that is actually transmitted to the game client.
---- @return zyklib.reactive.Observable
-function derived.forPlayerVariable(var)
+--- @param f (fun():T)? A function that computes the value of the observable from the variable. Defaults to returning var.value.
+--- @return zyklib.reactive.Observable<T>
+function derived.forPlayerVariable(var, f)
   -- Determine the base variable if necessary
   local base_var = var.baseVar or var
 
+  f = f or function() return var.value end
+
   return native.VarTransmit
       :filter(function(payload) return payload.var.id == base_var.id end) -- React on var transmits for the (base) variable
-      :map(function() return var.value end)                               -- Query value of the variable
-      :toObservable(var.value)
+      :map(function() return f() end)                                     -- Query value of the variable
+      :toObservable(f())
 end
 
 --- Construct an observable for any VarClient or VarPlayer variable. See Derived.forPlayerVariable or Derived.forClientVariables for more detail
