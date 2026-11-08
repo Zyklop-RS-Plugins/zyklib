@@ -156,6 +156,18 @@ function promise:isSettled()
   return self.state ~= "pending"
 end
 
+function promise:isRejected()
+  return self.state == "rejected"
+end
+
+function promise:getRejectionReason()
+  if self.state == "rejected" then
+    return self.reason
+  else
+    error("Promise is not rejected")
+  end
+end
+
 function promise:get()
   if self.state == "fulfilled" then
     return self.value
