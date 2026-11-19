@@ -2,6 +2,7 @@ local api_util         = require "zyklib/api_util"
 local Highlight        = require "zyklib/highlights/Highlight"
 local HighlightParams  = require "zyklib/highlights/HighlightParams"
 local game_events      = require "zyklib/game_events"
+local errors           = require "zyklib/errors"
 
 --- A LocHighlight is a highlight that is drawn for LocEntity objects. You can specify a filter to determine which LocEntity objects should be highlighted,
 --- and a render function to determine how each LocEntity highlight should be drawn.
@@ -10,7 +11,6 @@ local game_events      = require "zyklib/game_events"
 --- @field render fun(npc: LocEntity): ShapeListDrawSettings
 --- @field instances table<LocEntity, {shape_instance: ShapeInstance}>
 --- @field failed table<any, boolean> Locations whose render failed; skipped until they leave the filter
---- @field error_reported boolean? Whether a failure of this highlight was printed already
 --- @field active boolean
 local LocHighlight     = setmetatable({}, { __index = Highlight })
 LocHighlight.__index   = LocHighlight
@@ -19,13 +19,9 @@ LocHighlight.__index   = LocHighlight
 local active_instances = {}
 local instanceCount    = 0
 
---- Prints the first failure of a highlight only, as a failing highlight would otherwise print on every tick.
---- @param instance zyklib.LocHighlight
 --- @param err any
-local function report_error(instance, err)
-  if instance.error_reported then return end
-  instance.error_reported = true
-  print("[zyklib] LocHighlight failed, the affected locations are not highlighted: " .. tostring(err))
+local function report_error(err)
+  errors.report("LocHighlight failed, the affected locations are not highlighted", err)
 end
 
 --- Creates the ShapeInstance of one location.
@@ -72,7 +68,7 @@ local function update_instances(instance)
         instance.instances[loc_id] = entry
       else
         instance.failed[loc_id] = true
-        report_error(instance, entry)
+        report_error(entry)
       end
     end
   end
@@ -96,7 +92,7 @@ local draw_handler = game_events.native.ServerLogic:subscribe(function(event)
   for instance, _ in pairs(active_instances) do
     -- Protected per highlight, so one failing highlight doesn't stop the others from updating.
     local ok, err = pcall(update_instances, instance)
-    if not ok then report_error(instance, err) end
+    if not ok then report_error(err) end
   end
 end)
 

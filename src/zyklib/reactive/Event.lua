@@ -1,4 +1,5 @@
 local EventHandler = require("zyklib/reactive/EventHandler")
+local errors       = require("zyklib/errors")
 
 --- An event that can have multiple listeners and can be triggered with a payload.
 --- !doctype class
@@ -82,25 +83,10 @@ local function with_traceback(err)
   return tostring(err)
 end
 
---- Prints a listener's failure: the first one, then only at 10, 100, 1000 and every 10000, as a listener that fails
---- on every tick would otherwise flood the console.
---- @param listener zyklib.reactive.EventHandler
---- @param err string
-local function report_listener_error(listener, err)
-  local count = (listener.error_count or 0) + 1
-  listener.error_count = count
-
-  if count == 1 then
-    print("[zyklib] An event listener failed, the other listeners still ran: " .. err)
-  elseif count == 10 or count == 100 or count == 1000 or count % 10000 == 0 then
-    print(("[zyklib] The same event listener has failed %d times, last error: %s"):format(count, err))
-  end
-end
-
 --- Trigger this event with the given payload.
---- Each listener runs protected: a listener that fails is reported and the remaining listeners still run, so one
---- broken feature doesn't silently disable all others subscribed to the same event. The result is that of the last
---- listener that succeeded.
+--- Each listener runs protected: a listener that fails is reported (each distinct error once, see zyklib.errors) and
+--- the remaining listeners still run, so one broken feature doesn't silently disable all others subscribed to the same
+--- event. The result is that of the last listener that succeeded.
 --- @generic T, RetT
 --- @param self zyklib.reactive.Event<T, RetT>
 --- @param payload T
@@ -117,7 +103,7 @@ function Event:trigger(payload)
       if ok then
         result_value = result
       else
-        report_listener_error(listener, result --[[@as string]])
+        errors.report("event listener failed, the other listeners still ran", result)
       end
     end
   end

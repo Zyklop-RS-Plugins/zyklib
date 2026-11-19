@@ -4,7 +4,6 @@
 --- @field private cancelled boolean
 --- @field private suspended boolean
 --- @field private event zyklib.reactive.Event<T>
---- @field package error_count integer? How often the listener failed, counted by the event
 local EventHandler = {}
 EventHandler.__index = EventHandler
 
