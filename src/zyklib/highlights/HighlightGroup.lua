@@ -21,9 +21,15 @@ function HighlightGroup.new(children)
   return self
 end
 
+--- Activates all children. Should one fail, the children activated before it are deactivated again before the error is
+--- raised again, so none stays active without the caller having the group to deactivate it.
 function HighlightGroup:activate()
-  for _, value in ipairs(self.highlights) do
-    value:activate()
+  for i, value in ipairs(self.highlights) do
+    local ok, err = pcall(value.activate, value)
+    if not ok then
+      for j = 1, i - 1 do pcall(self.highlights[j].deactivate, self.highlights[j]) end
+      error(err, 0)
+    end
   end
   return self
 end

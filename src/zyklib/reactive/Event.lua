@@ -1,4 +1,5 @@
 local EventHandler = require("zyklib/reactive/EventHandler")
+local errors       = require("zyklib/errors")
 
 --- An event that can have multiple listeners and can be triggered with a payload.
 --- !doctype class
@@ -72,7 +73,20 @@ function Event:removeHandler(handler)
   end
 end
 
+-- The client may not offer the debug library. Without it, an error message still names the line it was raised on.
+local debug_library = rawget(_G, "debug")
+
+--- @param err any
+--- @return string
+local function with_traceback(err)
+  if debug_library and debug_library.traceback then return debug_library.traceback(tostring(err), 2) end
+  return tostring(err)
+end
+
 --- Trigger this event with the given payload.
+--- Each listener runs protected: a listener that fails is reported (each distinct error once, see zyklib.errors) and
+--- the remaining listeners still run, so one broken feature doesn't silently disable all others subscribed to the same
+--- event. The result is that of the last listener that succeeded.
 --- @generic T, RetT
 --- @param self zyklib.reactive.Event<T, RetT>
 --- @param payload T
@@ -84,7 +98,13 @@ function Event:trigger(payload)
   -- during notification don't affect the current dispatch.
   for _, listener in ipairs({ table.unpack(self.listeners) }) do
     if listener:isActive() then
-      result_value = listener:notify(payload)
+      ---@diagnostic disable-next-line: invisible -- notify is meant to be called by the event, which this is
+      local ok, result = xpcall(listener.notify, with_traceback, listener, payload)
+      if ok then
+        result_value = result
+      else
+        errors.report("event listener failed, the other listeners still ran", result)
+      end
     end
   end
 

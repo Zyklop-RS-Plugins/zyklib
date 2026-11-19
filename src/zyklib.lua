@@ -18,5 +18,6 @@ local zyklib = {
   http = require "zyklib/http",
   disposable = require "zyklib/disposable",
   util = require "zyklib/util",
+  errors = require "zyklib/errors",
 }
 return zyklib
