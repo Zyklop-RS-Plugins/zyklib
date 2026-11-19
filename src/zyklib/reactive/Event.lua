@@ -72,7 +72,35 @@ function Event:removeHandler(handler)
   end
 end
 
+-- The client may not offer the debug library. Without it, an error message still names the line it was raised on.
+local debug_library = rawget(_G, "debug")
+
+--- @param err any
+--- @return string
+local function with_traceback(err)
+  if debug_library and debug_library.traceback then return debug_library.traceback(tostring(err), 2) end
+  return tostring(err)
+end
+
+--- Prints a listener's failure: the first one, then only at 10, 100, 1000 and every 10000, as a listener that fails
+--- on every tick would otherwise flood the console.
+--- @param listener zyklib.reactive.EventHandler
+--- @param err string
+local function report_listener_error(listener, err)
+  local count = (listener.error_count or 0) + 1
+  listener.error_count = count
+
+  if count == 1 then
+    print("[zyklib] An event listener failed, the other listeners still ran: " .. err)
+  elseif count == 10 or count == 100 or count == 1000 or count % 10000 == 0 then
+    print(("[zyklib] The same event listener has failed %d times, last error: %s"):format(count, err))
+  end
+end
+
 --- Trigger this event with the given payload.
+--- Each listener runs protected: a listener that fails is reported and the remaining listeners still run, so one
+--- broken feature doesn't silently disable all others subscribed to the same event. The result is that of the last
+--- listener that succeeded.
 --- @generic T, RetT
 --- @param self zyklib.reactive.Event<T, RetT>
 --- @param payload T
@@ -84,7 +112,13 @@ function Event:trigger(payload)
   -- during notification don't affect the current dispatch.
   for _, listener in ipairs({ table.unpack(self.listeners) }) do
     if listener:isActive() then
-      result_value = listener:notify(payload)
+      ---@diagnostic disable-next-line: invisible -- notify is meant to be called by the event, which this is
+      local ok, result = xpcall(listener.notify, with_traceback, listener, payload)
+      if ok then
+        result_value = result
+      else
+        report_listener_error(listener, result --[[@as string]])
+      end
     end
   end
 

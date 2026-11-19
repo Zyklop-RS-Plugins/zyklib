@@ -9,6 +9,8 @@ local game_events      = require "zyklib/game_events"
 --- @field filter LocListFilterSettings
 --- @field render fun(npc: LocEntity): ShapeListDrawSettings
 --- @field instances table<LocEntity, {shape_instance: ShapeInstance}>
+--- @field failed table<any, boolean> Locations whose render failed; skipped until they leave the filter
+--- @field error_reported boolean? Whether a failure of this highlight was printed already
 --- @field active boolean
 local LocHighlight     = setmetatable({}, { __index = Highlight })
 LocHighlight.__index   = LocHighlight
@@ -17,51 +19,74 @@ LocHighlight.__index   = LocHighlight
 local active_instances = {}
 local instanceCount    = 0
 
+--- Prints the first failure of a highlight only, as a failing highlight would otherwise print on every tick.
+--- @param instance zyklib.LocHighlight
+--- @param err any
+local function report_error(instance, err)
+  if instance.error_reported then return end
+  instance.error_reported = true
+  print("[zyklib] LocHighlight failed, the affected locations are not highlighted: " .. tostring(err))
+end
+
+--- Creates the ShapeInstance of one location.
+--- @param instance zyklib.LocHighlight
+--- @param loc LocEntity
+--- @return {shape_instance: ShapeInstance}
+local function create_entry(instance, loc)
+  local settings = instance.render(loc)
+
+  local shape_instance = api_util.unique_shape_instance(settings.shapeData)
+
+  shape_instance:SetShapeData(settings.shapeData)
+  HighlightParams.apply_to_shape_instance(instance.actual_params, shape_instance)
+
+  if settings.translation ~= nil then
+    shape_instance.translation = settings.translation
+  end
+  if settings.scale ~= nil then
+    shape_instance.scale = settings.scale
+  end
+  if settings.colour ~= nil then
+    shape_instance.colour = settings.colour
+  end
+
+  return { shape_instance = shape_instance }
+end
+
 --- Update the ShapeInstances for a given LocHighlight to synchronize existing ShapeEntities with the current set of LocEntity objects that match the filter.
 --- This will create new ShapeInstances for newly matching LocEntity objects, and destroy ShapeInstances for LocEntity objects that no longer exist or match the filter.
+--- A location whose render fails is reported once and skipped while it matches, instead of failing again on every tick.
 --- @param instance zyklib.LocHighlight
 local function update_instances(instance)
   local locs = instance.active and LocList.Filter(instance.filter) or {}
 
   local active_locs = {}
 
-  local create_count = 0
-
   for _, loc in ipairs(locs) do
-    active_locs[api_util.loc_identity(loc)] = true
+    local loc_id = api_util.loc_identity(loc)
+    active_locs[loc_id] = true
 
-    if instance.instances[api_util.loc_identity(loc)] == nil then
-      create_count = create_count + 1
-      local settings = instance.render(loc)
-
-      local shape_instance = api_util.unique_shape_instance(settings.shapeData)
-
-      shape_instance:SetShapeData(settings.shapeData)
-      HighlightParams.apply_to_shape_instance(instance.actual_params, shape_instance)
-
-      if settings.translation ~= nil then
-        shape_instance.translation = settings.translation
+    if instance.instances[loc_id] == nil and not instance.failed[loc_id] then
+      local ok, entry = pcall(create_entry, instance, loc)
+      if ok then
+        instance.instances[loc_id] = entry
+      else
+        instance.failed[loc_id] = true
+        report_error(instance, entry)
       end
-      if settings.scale ~= nil then
-        shape_instance.scale = settings.scale
-      end
-      if settings.colour ~= nil then
-        shape_instance.colour = settings.colour
-      end
-
-      instance.instances[api_util.loc_identity(loc)] = {
-        shape_instance = shape_instance,
-      }
     end
   end
 
-  local destroy_count = 0
   for loc_id, entry in pairs(instance.instances) do
     if not active_locs[loc_id] then
       entry.shape_instance:Destroy()
       instance.instances[loc_id] = nil
-      destroy_count = destroy_count + 1
     end
+  end
+
+  -- Gone or deactivated: tried again should it match again.
+  for loc_id in pairs(instance.failed) do
+    if not active_locs[loc_id] then instance.failed[loc_id] = nil end
   end
 end
 
@@ -69,7 +94,9 @@ end
 --- @type zyklib.reactive.EventHandler
 local draw_handler = game_events.native.ServerLogic:subscribe(function(event)
   for instance, _ in pairs(active_instances) do
-    update_instances(instance)
+    -- Protected per highlight, so one failing highlight doesn't stop the others from updating.
+    local ok, err = pcall(update_instances, instance)
+    if not ok then report_error(instance, err) end
   end
 end)
 
@@ -88,6 +115,7 @@ function LocHighlight.new(filter, render)
   self.filter = filter
   self.render = render
   self.instances = {}
+  self.failed = {}
   self.active = false
 
   return self
@@ -109,6 +137,8 @@ function LocHighlight:deactivate()
 end
 
 --- Activates this LocHighlight and adds it to the list of active highlights. This will cause it to be drawn.
+--- Should the first update fail, the activation is undone before the error is raised again, so the highlight can't
+--- stay registered without its owner having a reference to deactivate it.
 --- @return self
 function LocHighlight:activate()
   if not self.active then
@@ -116,7 +146,15 @@ function LocHighlight:activate()
     active_instances[self] = true
     instanceCount = instanceCount + 1
 
-    update_instances(self)
+    local ok, err = pcall(update_instances, self)
+    if not ok then
+      self.active = false
+      active_instances[self] = nil
+      instanceCount = instanceCount - 1
+      pcall(update_instances, self) -- Inactive, this destroys the shapes created before the failure.
+      error(err, 0)
+    end
+
     update_logic_hook()
   end
 

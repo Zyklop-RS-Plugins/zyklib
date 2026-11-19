@@ -7,12 +7,26 @@ local game_events     = require "zyklib/game_events"
 --- @field filter fun(npc: NPCEntity): boolean
 --- @field render fun(npc: NPCEntity): ShapeListDrawSettings
 --- @field active boolean
+--- @field error_reported boolean? Whether a failure of this highlight was printed already
 local NpcHighlight    = setmetatable({}, { __index = Highlight })
 NpcHighlight.__index  = NpcHighlight
 
 --- @type table<zyklib.NpcHighlight, boolean>
 local instances       = {}
 local instanceCount   = 0
+
+--- Draws one highlight for an NPC, if its filter matches.
+--- @param instance zyklib.NpcHighlight
+--- @param npc NPCEntity
+local function draw(instance, npc)
+  if instance.filter(npc) then
+    local settings = instance.render(npc)
+
+    HighlightParams.apply_to_draw_call(instance.actual_params, settings)
+
+    ShapeList.Draw(settings)
+  end
+end
 
 --- @type zyklib.reactive.EventHandler
 local draw_handler    = game_events.native.EntityDraw:subscribeSuspended(function(event)
@@ -24,12 +38,12 @@ local draw_handler    = game_events.native.EntityDraw:subscribeSuspended(functio
 
   for instance in pairs(instances) do
     if instance.actual_params.visible ~= false then
-      if instance.filter(npc) then
-        local settings = instance.render(npc)
-
-        HighlightParams.apply_to_draw_call(instance.actual_params, settings)
-
-        ShapeList.Draw(settings)
+      -- Protected per highlight, so a failing highlight neither stops the others nor keeps this handler from returning
+      -- true. A failure is printed once, as this runs for every NPC on every frame.
+      local ok, err = pcall(draw, instance, npc)
+      if not ok and not instance.error_reported then
+        instance.error_reported = true
+        print("[zyklib] NpcHighlight failed, the affected NPCs are not highlighted: " .. tostring(err))
       end
     end
   end
